@@ -428,3 +428,21 @@ idx_res_AC_up <- match(res_AC_up$ensembl, genemap_res_AC_up$ensembl_gene_id_vers
 * genemap_res_CB_up 122
 * genemap_res_AC_up 614
 * genemap_res_CA_up 954
+
+What about their idx's?
+# DAVID
+```
+DAVID
+Functional Annotation
+Upload gene list, select identifier, and select list type, submit
+Gene list manager: select to limit annoations by one or more species, use all species: Felis catus (14) or unknown (15) You are either not sure which identifier type your list contains, or less than 80% of your list has mapped to your chosen identifier type. Please use the Gene Conversion Tool to determine the identifier type.
+    Option 1 (Recommended) continue to submit IDs that DAVID could map
+    Option 2 convert gene list
+Get Functional Annotation Table
+Download file
+# res_AB_up - [.txt]
+# Import Dataset from Text (base), rename 
+> tr_ <- read.delim2("~/Documents/salmon/dirs/tr_.txt")
+>   View(tr_)
+write.table(tr_, file="GOdavid_AB_up.csv", append = FALSE, sep = "\t", na = "NA", dec = ".", row.names = TRUE, col.names= TRUE)
+```
