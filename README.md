@@ -446,3 +446,52 @@ Download file
 >   View(tr_)
 write.table(tr_, file="GOdavid_AB_up.csv", append = FALSE, sep = "\t", na = "NA", dec = ".", row.names = TRUE, col.names= TRUE)
 ```
+```
+data <- read.table("data/Mov10_full_counts.txt", header=T, row.names=1)
+meta <- read.table("meta/Mov10_full_meta.txt", header=T, row.names=1)
+
+class(meta)
+class(data)
+
+ggplot(XXXX) +
+        geom_histogram(aes(x=Sample_1_S1),
+        stat="bin", bins=200) +
+        x lab = ("Raw expression counts") +
+        y lab = ("Number of genes")
+        
+ggplot(XXXX) +
+        geom_histogram(aes(x=Sample_1_S1), 
+        stat="bin", bins=200) +
+        xlim (-5, 500) +
+        xlab ("Raw expression counts")
+        ylab ("Number of genes")
+        
+# for Sample_2_S2 and so on..
+
+PrF_mean_counts <- apply( [,1:3],1,mean)
+PrF_variance_counts <- apply( [,1:3],1,var)
+
+PrF_df <- dataframe(PrF_mean_counts, PrF_variance_counts)
+
+# do for PF and SF
+
+ggplot(PrF_df)
+        geom_point(aes(x=PrF_mean_counts, v=PrF_variance_counts)) +
+        geom_line(aes(x=PrF_mean_counts, y=PrF_mean_counts, color="red")) +
+        scale_y_log10() +
+        scale_x_log10()
+        
+# do for PF and SF
+
+vignette("DESeq2")
+dds <- DESeqDataSetfromMatrix(countData=data, colData=meta, design=~sampletype)
+View(counts(dds))
+dds <- estimateSizeFactors(dds)
+SizeFactors(dds)
+normalized_counts <- counts(dds, normalized=TRUE)
+write.table(normalized_counts, file="data/normalized_counts.txt", sep="\t", quote=F, col.names=NA)
+
+
+
+
+
