@@ -491,6 +491,123 @@ SizeFactors(dds)
 normalized_counts <- counts(dds, normalized=TRUE)
 write.table(normalized_counts, file="data/normalized_counts.txt", sep="\t", quote=F, col.names=NA)
 
+rld <- rlog(dds, blind=TRUE)
+# input matrix of log transformed values
+rld <- rlog(dds, blind=TRUE)
+rld_mat <- assay(rld)
+pca <- prcomp(t(rld_mat))
+# create df with metadata + PC3 and PC4 values for input to ggplot
+df <- cbind(meta, pca$x)
+ggplot(df + geom_point(aes(x=PC3, y=PC4, color=sampletype))
+# extract the rlog matrix from the object
+rld_mat <- assay(rld)
+# compute pairwise correlation values
+rld_cor <- cor(rld_mat)
+head(rld_cor) # check output of cor() make note of the rownames and colnames
+pheatmap(rld_cor)
+heat.colors <- brewer.pal(6, "Blues")
+pheatmap(rld_cor, color=heat.colors, border_color=NA, fontsize=10, fontsize_row=10, height=20)
+
+dds <- DESeq # already created, now run the analysis
+dds <- DESeq(dds)
+# check size factors
+SizeFactors(dds)
+# total number of raw counts per sample
+colSums(counts(dds), normalized=TRUE))
+# now plot dispersion estimates
+plotDispEsts(dds)
+# now define contrasts, extract results table, and shrink the log2 fold changes
+
+contrast_oe <- c("sampletype", "mov10_overexpression", "control")
+res_tableOE_unshrunken <- results(dds, contrast=contrast_oe, alpha=0.05)
+res_tableOE <- lfcShrink(dds, contrast=contrast_oe, res=res_tableEO_unshrunken)
+plotMA(res_tableOE_unshrunken, ylim=c(-2,2))
+plotMA(res_tableOE, ylim=c(-2,2))
+class(res_tableOE)
+mcols(res_table, use.names=TRUE)
+res_tableOE %>% data.frame() %>% View()
+#define contrasts, extract results table and shrink log2FC
+contrast_kd <- c("sampletype", "mov10_knockdown", "control")
+res_tableKD <- results(dds, contrast=contrast_kd, alpha=0.05)
+res_tableKD <- lfcShrink(dds, contrast=contrast_kd, res=res_tableKD)
+# summarize results
+summary(res_tableOE)
+
+padj.cutoff <- 0.05
+lfc.cutoff <- 0.58
+
+res_tableOE_tb <- res_tableOE %>%
+        data.frame() %>%
+        rownames_to_column(var="gene") %>%
+        as_tibble()
+sigOE <- res_tableOE_tb %>%
+        filter(padj.cutoff & abs(log2FoldChange > lfc.cutoff)
+sigOE
+
+# do the same for res_tableKD_tb etc
+# create tibbles including row names
+mov10_mate <- meta %>% 
+        rownames_to_column(var="samplename") %>%
+        as_tibble()
+normalized_counts <- normalized_counts %>% 
+        data.frame() %>%
+        rownames_to_column(var="gene") %>%
+        as_tibble()
+# plot expression for single gene
+plotCounts(dds, gene="Mov10", intgroup="sampletype")
+# save plotcounts to a dataframe object
+d <- plotCounts(dds, gene="Mov10", intgroup="sampletype", returnData=TRUE)
+# plotting the MOV10 normalized counts, using samplenames (rownames of d as labels)
+ggplot(d, aes(x=sampletype, y=count, color=sampletype)) +
+        geom_point(position=position_jitter(w=0.1, h=0)) +
+        geom_text_repel(aes(label=rownames(d))) +
+        theme_bw() +
+        ggtitle("MOV10")
+        theme(plot_title=element_text(hjust=0.5)
+# order results by padj values
+top20_sigOE_genes <- res_tableOE_tb %>%
+        arrange(padj) %>%
+        pull(gene) %>%
+        head(n=20)
+# normalized counts for top 20 significant genes
+top20_sigOE_norm <- normalized_counts %>%
+        filter(gene %in% top20_sigOE_genes)
+# gathering the columns to have normalized counts to a single column
+gathered_top20_sigOE <- top20_sigOE_norm %>%
+        gather(colnames(top20_sigOE_norm)[2:9],key="samplename", value="normalized_counts")
+# chekc the column header in the "gathered" dataframe
+View(gathered_top20_sigOE)
+gathered_top20_sigOE <- innerjoin(Mov10_meta, gathered_top20_sigOE)
+# plot ggplot2
+ggplot(gathered_top20_sigOE) +
+        geom_point(aes(x=gene, y=normalized_counts, color=(sampletype)) +
+        scale_y_log10() +
+        xlab("Genes") +
+        ylab("log10 Normalized Counts") +
+        ggtitle(Top 20 significant DEGS") +
+        theme_bw() +
+        theme(axis.text.x=element_text(angle=45, hjust=1)) +
+        theme(plot.title=element_text(hjust=0.5))
+# extract normalized expression for significant genes from the OE and control samples (4:9), set gene column (1) to row names 
+norm_ORsig <- normalized_counts[,c(1,4:9)] %>% 
+        filter(gene %in% (sigOE$gene) %>%
+        data.frame() %>%
+        column_to_rownames(var="gene")
+# annotate heatmap
+annotation <- mov10_meta %>%
+        select(samplename, sampletype %>%
+        data.frame(row.names="samplename")
+# set color palette
+heat_colors <- brewer.pal(6, "xxxxxx.......
+
+        
+
+
+
+
+
+
+
 
 
 
