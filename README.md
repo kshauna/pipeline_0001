@@ -649,4 +649,248 @@ DEGreport::degVolcano(
     
 # Available in the newer version for R 3.4
 DEGreport::degPlotWide(dds = dds, genes = row.names(res)[1:5], group = "condition")
+
+Hypothesis testing: Likelihood ratio test (LRT)
+library(DESeq2)
+library(DEGreport)
+
+# The full model was specified previously with the `design = ~ sampletype`:
+# dds <- DESeqDataSetFromMatrix(countData = data, colData = meta, design = ~ sampletype)
+
+# Likelihood ratio test
+dds_lrt <- DESeq(dds, test="LRT", reduced = ~ 1)
+
+# Extract results
+res_LRT <- results(dds_lrt)
+
+# Subset the LRT results to return genes with padj < 0.05
+sig_res_LRT <- res_LRT %>%
+               data.frame() %>%
+               rownames_to_column(var="gene") %>% 
+               as_tibble() %>% 
+               filter(padj < padj.cutoff)
+ 
+# Get sig gene lists
+sigLRT_genes <- sig_res_LRT %>% 
+                pull(gene)
+                
+length(sigLRT_genes)
+
+# Compare to numbers we had from Wald test
+nrow(sigOE)
+nrow(sigKD)
+
+# Subset results for faster cluster finding (for classroom demo purposes)
+clustering_sig_genes <- sig_res_LRT %>%
+                  arrange(padj) %>%
+                  head(n=1000)
+
+
+# Obtain rlog values for those significant genes
+cluster_rlog <- rld_mat[clustering_sig_genes$gene, ]
+
+# Use the `degPatterns` function from the 'DEGreport' package to show gene clusters across sample groups
+clusters <- degPatterns(cluster_rlog, metadata = meta, time = "sampletype", col=NULL)
+
+# What type of data structure is the `clusters` output?
+class(clusters)
+
+# Let's see what is stored in the `df` component
+head(clusters$df)
+
+# Extract the Group 1 genes
+cluster_groups <- clusters$df
+group1 <- clusters$df %>%
+          filter(cluster == 1)
+          
+ library(org.Hs.eg.db)
+library(DOSE)
+library(pathview)
+library(clusterProfiler)
+library(AnnotationHub)
+library(ensembldb)
+library(tidyverse)
+
+## Explore the grch37 table loaded by the annotables library
+grch37
+
+## Return the IDs for the gene symbols in the DE results
+idx <- grch37$symbol %in% rownames(res_tableOE)
+
+ids <- grch37[idx, ]
+
+## The gene names can map to more than one Ensembl ID (some genes change ID over time), 
+## so we need to remove duplicate IDs prior to assessing enriched GO terms
+non_duplicates <- which(duplicated(ids$symbol) == FALSE)
+
+ids <- ids[non_duplicates, ] 
+
+## Merge the IDs with the results 
+res_ids <- inner_join(res_tableOE_tb, ids, by=c("gene"="symbol"))   
+
+## Create background dataset for hypergeometric testing using all genes tested for significance in the results                 
+allOE_genes <- as.character(res_ids$ensgene)
+
+## Extract significant results
+sigOE <- filter(res_ids, padj < 0.05)
+
+sigOE_genes <- as.character(sigOE$ensgene)
+
+## Run GO enrichment analysis 
+ego <- enrichGO(gene = sigOE_genes, 
+                universe = allOE_genes,
+                keyType = "ENSEMBL",
+                OrgDb = org.Hs.eg.db, 
+                ont = "BP", 
+                pAdjustMethod = "BH", 
+                qvalueCutoff = 0.05, 
+                readable = TRUE)
+                
+## Output results from GO analysis to a table
+cluster_summary <- data.frame(ego)
+
+write.csv(cluster_summary, "results/clusterProfiler_Mov10oe.csv")
+
+## Dotplot 
+dotplot(ego, showCategory=50)
+
+## Enrichmap clusters the 50 most significant (by padj) GO terms to visualize relationships between terms
+emapplot(ego, showCategory = 50)
+
+## To color genes by log2 fold changes, we need to extract the log2 fold changes from our results table creating a named vector
+OE_foldchanges <- sigOE$log2FoldChange
+
+names(OE_foldchanges) <- sigOE$gene
+
+## Cnetplot details the genes associated with one or more terms - by default gives the top 5 significant terms (by padj)
+cnetplot(ego, 
+         categorySize="pvalue", 
+         showCategory = 5, 
+         foldChange=OE_foldchanges, 
+         vertex.label.font=6)
+         
+## If some of the high fold changes are getting drowned out due to a large range, you could set a maximum fold change value
+OE_foldchanges <- ifelse(OE_foldchanges > 2, 2, OE_foldchanges)
+OE_foldchanges <- ifelse(OE_foldchanges < -2, -2, OE_foldchanges)
+
+cnetplot(ego, 
+         categorySize="pvalue", 
+         showCategory = 5, 
+         foldChange=OE_foldchanges, 
+         vertex.label.font=6)
+
+## Subsetting the ego results without overwriting original `ego` variable
+ego2 <- ego
+
+ego2@result <- ego@result[c(1,3,4,8,9),]
+
+## Plotting terms of interest
+cnetplot(ego2, 
+         categorySize="pvalue", 
+         foldChange=OE_foldchanges, 
+         showCategory = 5, 
+         vertex.label.font=6)
+         
+## Remove any NA values
+res_entrez <- filter(res_ids, entrez != "NA")
+
+## Remove any Entrez duplicates
+res_entrez <- res_entrez[which(duplicated(res_entrez$entrez) == F), ]
+
+## Extract the foldchanges
+foldchanges <- res_entrez$log2FoldChange
+
+## Name each fold change with the corresponding Entrez ID
+names(foldchanges) <- res_entrez$entrez
+
+## Sort fold changes in decreasing order
+foldchanges <- sort(foldchanges, decreasing = TRUE)
+
+head(foldchanges)
+
+## GSEA using gene sets from KEGG pathways
+gseaKEGG <- gseKEGG(geneList = foldchanges, # ordered named vector of fold changes (Entrez IDs are the associated names)
+              organism = "hsa", # supported organisms listed below
+              nPerm = 1000, # default number permutations
+              minGSSize = 20, # minimum gene set size (# genes in set) - change to test more sets or recover sets with fewer # genes
+              pvalueCutoff = 0.05, # padj cutoff value
+              verbose = FALSE)
+
+## Extract the GSEA results
+gseaKEGG_results <- gseaKEGG@result
+
+## Write GSEA results to file
+View(gseaKEGG_results)
+
+write.csv(gseaKEGG_results, "results/gseaOE_kegg.csv", quote=F)
+
+## Plot the GSEA plot for a single enriched pathway, `hsa03040`
+gseaplot(gseaKEGG, geneSetID = 'hsa03040')
+
+## Output images for a single significant KEGG pathway
+detach("package:dplyr", unload=TRUE) # first unload dplyr to avoid conflicts
+pathview(gene.data = foldchanges,
+              pathway.id = "hsa03040",
+              species = "hsa",
+              limit = list(gene = 2, # value gives the max/min limit for foldchanges
+              cpd = 1))
+              
+## Output images for all significant KEGG pathways
+get_kegg_plots <- function(x) {
+   pathview(gene.data = foldchanges, pathway.id = gseaKEGG_results$ID[x], species = "hsa", 
+       limit = list(gene = 2, cpd = 1))
+}
+
+purrr::map(1:length(gseaKEGG_results$ID), get_kegg_plots)
+
+# GSEA using gene sets associated with BP Gene Ontology terms
+gseaGO <- gseGO(geneList = foldchanges, 
+              OrgDb = org.Hs.eg.db, 
+              ont = 'BP', 
+              nPerm = 1000, 
+              minGSSize = 20, 
+              pvalueCutoff = 0.05,
+              verbose = FALSE) 
+
+gseaGO_results <- gseaGO@result
+
+gseaplot(gseaGO, geneSetID = 'GO:0007423')
+
+biocLite("GSEABase")
+library(GSEABase)
+
+# Load in GMT file of gene sets (we downloaded from the Broad Institute [website](http://software.broadinstitute.org/gsea/msigdb/collections.jsp) for MSigDB)
+
+c2 <- read.gmt("/data/c2.cp.v6.0.entrez.gmt.txt")
+
+msig <- GSEA(foldchanges, TERM2GENE=c2, verbose=FALSE)
+
+msig_df <- data.frame(msig)
+
+# Set-up
+
+source("http://bioconductor.org/biocLite.R") 
+biocLite("SPIA")
+library(SPIA)
+
+## Significant genes is a vector of fold changes where the names are ENTREZ gene IDs. The background set is a vector of all the genes represented on the platform.
+
+background_entrez <- res_entrez$entrez
+
+sig_res_entrez <- res_entrez[which(res_entrez$padj < 0.05), ]
+
+sig_entrez <- sig_res_entrez$log2FoldChange
+
+names(sig_entrez) <- sig_res_entrez$entrez
+
+head(sig_entrez)
+
+spia_result <- spia(de=sig_entrez, all=background_entrez, organism="hsa")
+
+head(spia_result, n=20)
+
+plotP(spia_result, threshold=0.05)
+
+## Look at pathway 03013 and view kegglink
+subset(spia_result, ID == "03013")
 ```
