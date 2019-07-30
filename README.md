@@ -598,17 +598,55 @@ annotation <- mov10_meta %>%
         select(samplename, sampletype %>%
         data.frame(row.names="samplename")
 # set color palette
-heat_colors <- brewer.pal(6, "xxxxxx.......
+heat_colors <- brewer.pal(6, "YlOrRd")
+pheatmap(norm_OEsig, 
+         color = heat_colors, 
+         cluster_rows = T, 
+         show_rownames = F,
+         annotation = annotation, 
+         border_color = NA, 
+         fontsize = 10, 
+         scale = "row", 
+         fontsize_row = 10, 
+         height = 20)
 
-        
+# Volcano plot; Obtain logical vector where TRUE values denote padj values < 0.05 and fold change > 1.5 in either direction
+res_tableOE_tb <- res_tableOE_tb %>% 
+                  mutate(threshold_OE = padj < 0.05 & abs(log2FoldChange) >= 0.58)
 
+ggplot(res_tableOE_tb) +
+        geom_point(aes(x = log2FoldChange, y = -log10(padj), colour = threshold_OE)) +
+        ggtitle("Mov10 overexpression") +
+        xlab("log2 fold change") + 
+        ylab("-log10 adjusted p-value") +
+        #scale_y_continuous(limits = c(0,50)) +
+        theme(legend.position = "none",
+              plot.title = element_text(size = rel(1.5), hjust = 0.5),
+              axis.title = element_text(size = rel(1.25)))
+              
+# If we want to know where the top 10 genes (lowest padj) in our DE list are located we could label those dots with the gene name on the Volcano plot using geom_text_repel(). First, we need to order the res_tableOEtibble by padj, and add an additional column to it, to  include on those gene names we want to use to label the plot. 
 
+res_tableOE_tb <- res_tableOE_tb %>% arrange(padj) %>% mutate(genelabels = "")
+res_tableOE_tb$genelabels[1:10] <- res_tableOE_tb$gene[1:10]
+View(res_tableOE_tb)
 
+ggplot(res_tableOE_tb, aes(x = log2FoldChange, y = -log10(padj))) +
+        geom_point(aes(colour = threshold_OE)) +
+        geom_text_repel(aes(label = genelabels)) +
+        ggtitle("Mov10 overexpression") +
+        xlab("log2 fold change") + 
+        ylab("-log10 adjusted p-value") +
+        theme(legend.position = "none",
+              plot.title = element_text(size = rel(1.5), hjust = 0.5),
+              axis.title = element_text(size = rel(1.25))) 
 
+# DEGreport can use the DESeq2 results output to make the top20 genes and the volcano plots generated above. 
+DEGreport::degPlot(dds = dds, res = res, n = 20, xs = "type", group = "condition") # dds object is output from DESeq2
 
-
-
-
-
-
-
+DEGreport::degVolcano(
+    data.frame(res[,c("log2FoldChange","padj")]), # table - 2 columns
+    plot_text = data.frame(res[1:10,c("log2FoldChange","padj","id")])) # table to add names
+    
+# Available in the newer version for R 3.4
+DEGreport::degPlotWide(dds = dds, genes = row.names(res)[1:5], group = "condition")
+```
