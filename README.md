@@ -446,10 +446,11 @@ Download file
 >   View(tr_)
 write.table(tr_, file="GOdavid_AB_up.csv", append = FALSE, sep = "\t", na = "NA", dec = ".", row.names = TRUE, col.names= TRUE)
 ```
-```
-Example code from https://github.com/hbctraining/DGE_workshop/tree/master/lessons
-from hbctraining/DGE_workshop from DGE/workshop/lessons/01-09
+* Example code from https://github.com/hbctraining/DGE_workshop/tree/master/lessons
+* from hbctraining/DGE_workshop from DGE/workshop/lessons/01-09
 
+* I am interested in how I can use the code from this lesson https://github.com/hbctraining/DGE_workshop/blob/master/lessons/09_functional_analysis.md to extract GOs and KEGGS and to try represent my data how they do. 
+```
 data <- read.table("data/Mov10_full_counts.txt", header=T, row.names=1)
 meta <- read.table("meta/Mov10_full_meta.txt", header=T, row.names=1)
 
