@@ -737,7 +737,7 @@ sigOE <- filter(res_ids, padj < 0.05)
 sigOE_genes <- as.character(sigOE$ensgene)
 ```
 # Example code from https://github.com/hbctraining/DGE_workshop/blob/master/lessons/09_functional_analysis.md lesson on functional analysis
-* I am interested in how I can use the code from this lesson https://github.com/hbctraining/DGE_workshop/blob/master/lessons/09_functional_analysis.md to extract GOs and KEGGS and to try represent my data how they do. Below I have tried to implement object **res_AC** and its respective code into their pipeline however, I am unsure if it makes sense. Here they use library(org.Hs.eg.db) but I need one for Felis catus. This is why I started working with DAVID but I would like to know if you had any advice on what my options are? 
+**I am interested in how I can use the code from this lesson https://github.com/hbctraining/DGE_workshop/blob/master/lessons/09_functional_analysis.md to extract GOs and KEGGS and to try represent my data how they do. Below I have tried to implement object res_AC and its respective code into their pipeline however, I am unsure if it makes sense. Here they use library(org.Hs.eg.db) but I need one for Felis catus. This is why I started working with DAVID but I would like to know if you had any advice on what my options are?**
 ```
 res_AC_up$ensembl <- sapply(strsplit(rownames(res_AC_up), split="\\+"), "[", 1)
 library("biomaRt")
@@ -748,7 +748,7 @@ genemap_res_AC_up <- getBM(attributes = c("ensembl_gene_id", "ensembl_gene_id_ve
                   mart = ensembl)
 idx_res_AC_up <- match(res_AC_up$ensembl, genemap_res_AC_up$ensembl_gene_id_version)
 ```
-where res_AC_up originates from creating contrasts as follows
+**where res_AC_up originates from creating contrasts as follows**
 ```
 # this is all the results (significant and non-significant)
 res_AC <- results(dds, alpha = 0.05, filterFun = ihw, contrast = c("type", "A", "C"))
@@ -762,7 +762,7 @@ res_AC_dn <- subset(res_AC, padj < 0.05 & log2FoldChange <= -1)
 # double check that the numbers add up
 (nrow(res_AC_up) + nrow(res_AC_dn)) == nrow(res_AC_sig)
 ```
-Now I want to use the significantly up-regulated genes **res_AC_up** to extract GO terms and make nice tables and graphs. Here I am unsure whether to use **res_AC_up** or **genemap_res_AC_up** as its contrast results in significantly up-regulated genes and it has gene names already assigned which I assumre I can call by **genemap_res_AC_up$ensembl_gene_id**
+**Now I want to use the significantly up-regulated genes res_AC_up to extract GO terms and make nice tables and graphs. Here I am unsure whether to use res_AC_up or genemap_res_AC_up as its contrast results in significantly up-regulated genes and it has gene names already assigned which I assumre I can call by genemap_res_AC_up$ensembl_gene_id**
 ```
 ## Run GO enrichment analysis 
 ego_AC_up <- enrichGO(gene = res_AC_up, 
@@ -785,13 +785,14 @@ dotplot(ego_AC_up, showCategory=50)
 ## Enrichmap clusters the 50 most significant (by padj) GO terms to visualize relationships between terms
 emapplot(ego_AC_up, showCategory = 50)
 ```
+**I start getting lost here**
 ```
 ## To color genes by log2 fold changes, we need to extract the log2 fold changes from our results table creating a named vector
 AC_up_foldchanges <- res_AC_up$log2FoldChange
 
 names(AC_up_foldchanges) <- res_AC_up$gene 
 ```
-For the above code, I don't know how to call on gene from res_AC_up as head(res_AC_up) shows that the list of genes do not have a header name
+**For the above code, I don't know how to call on gene from res_AC_up as head(res_AC_up) shows that the list of genes do not have a header name**
 ```
 ## Cnetplot details the genes associated with one or more terms - by default gives the top 5 significant terms (by padj)
 cnetplot(ego_AC_up, 
