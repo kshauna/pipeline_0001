@@ -446,7 +446,7 @@ Download file
 >   View(tr_)
 write.table(tr_, file="GOdavid_AB_up.csv", append = FALSE, sep = "\t", na = "NA", dec = ".", row.names = TRUE, col.names= TRUE)
 ```
-# Example code from https://github.com/hbctraining/DGE_workshop/tree/master/lessons
+# Example code from https://github.com/hbctraining/DGE_workshop/tree/master/lessons from lesson 1-9
 * from hbctraining/DGE_workshop from DGE/workshop/lessons/01-09
 
 * I am interested in how I can use the code from this lesson https://github.com/hbctraining/DGE_workshop/blob/master/lessons/09_functional_analysis.md to extract GOs and KEGGS and to try represent my data how they do. 
@@ -739,7 +739,7 @@ sigOE <- filter(res_ids, padj < 0.05)
 
 sigOE_genes <- as.character(sigOE$ensgene)
 ```
-# Example code from https://github.com/hbctraining/DGE_workshop/blob/master/lessons/09_functional_analysis.md
+# Example code from https://github.com/hbctraining/DGE_workshop/blob/master/lessons/09_functional_analysis.md lesson on functional analysis
 * using res_AC as an example
 * and genemap_res_AC_up 
 ```
@@ -752,7 +752,7 @@ genemap_res_AC_up <- getBM(attributes = c("ensembl_gene_id", "ensembl_gene_id_ve
                   mart = ensembl)
 idx_res_AC_up <- match(res_AC_up$ensembl, genemap_res_AC_up$ensembl_gene_id_version)
 ```
-where res_AC_up origiantes from creating contrasts as follows
+where res_AC_up originates from creating contrasts as follows
 ```
 # this is all the results (significant and non-significant)
 res_AC <- results(dds, alpha = 0.05, filterFun = ihw, contrast = c("type", "A", "C"))
