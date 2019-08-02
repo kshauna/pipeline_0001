@@ -446,8 +446,7 @@ Download file
 >   View(tr_)
 write.table(tr_, file="GOdavid_AB_up.csv", append = FALSE, sep = "\t", na = "NA", dec = ".", row.names = TRUE, col.names= TRUE)
 ```
-# HBC example code
-* Example code from https://github.com/hbctraining/DGE_workshop/tree/master/lessons
+# Example code from https://github.com/hbctraining/DGE_workshop/tree/master/lessons
 * from hbctraining/DGE_workshop from DGE/workshop/lessons/01-09
 
 * I am interested in how I can use the code from this lesson https://github.com/hbctraining/DGE_workshop/blob/master/lessons/09_functional_analysis.md to extract GOs and KEGGS and to try represent my data how they do. 
@@ -740,9 +739,9 @@ sigOE <- filter(res_ids, padj < 0.05)
 
 sigOE_genes <- as.character(sigOE$ensgene)
 ```
-# GO: taking their code as an example and substituting my objects in 
+# Example code from https://github.com/hbctraining/DGE_workshop/blob/master/lessons/09_functional_analysis.md
 * using res_AC as an example
-* taking from genemap_res_AC_up 
+* and genemap_res_AC_up 
 ```
 res_AC_up$ensembl <- sapply(strsplit(rownames(res_AC_up), split="\\+"), "[", 1)
 library("biomaRt")
