@@ -446,10 +446,7 @@ Download file
 >   View(tr_)
 write.table(tr_, file="GOdavid_AB_up.csv", append = FALSE, sep = "\t", na = "NA", dec = ".", row.names = TRUE, col.names= TRUE)
 ```
-# Example code from https://github.com/hbctraining/DGE_workshop/tree/master/lessons from lesson 1-9
-* from hbctraining/DGE_workshop from DGE/workshop/lessons/01-09
-
-* I am interested in how I can use the code from this lesson https://github.com/hbctraining/DGE_workshop/blob/master/lessons/09_functional_analysis.md to extract GOs and KEGGS and to try represent my data how they do. 
+# Example code from https://github.com/hbctraining/DGE_workshop/tree/master/lessons lessons 1-9
 ```
 data <- read.table("data/Mov10_full_counts.txt", header=T, row.names=1)
 meta <- read.table("meta/Mov10_full_meta.txt", header=T, row.names=1)
@@ -740,8 +737,7 @@ sigOE <- filter(res_ids, padj < 0.05)
 sigOE_genes <- as.character(sigOE$ensgene)
 ```
 # Example code from https://github.com/hbctraining/DGE_workshop/blob/master/lessons/09_functional_analysis.md lesson on functional analysis
-* using res_AC as an example
-* and genemap_res_AC_up 
+* I am interested in how I can use the code from this lesson https://github.com/hbctraining/DGE_workshop/blob/master/lessons/09_functional_analysis.md to extract GOs and KEGGS and to try represent my data how they do. Below I have tried to implement object **res_AC** and its respective code into their pipeline however, I am unsure if it makes sense. Here they use library(org.Hs.eg.db) but I need one for Felis catus. This is why I started working with DAVID but I would like to know if you had any advice on what my options are? 
 ```
 res_AC_up$ensembl <- sapply(strsplit(rownames(res_AC_up), split="\\+"), "[", 1)
 library("biomaRt")
