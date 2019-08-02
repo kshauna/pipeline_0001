@@ -830,38 +830,6 @@ cnetplot(ego2_AC_up,
 ## Remove any NA values
 res_AC_up_entrez <- filter(idx_res_AC_up, entrez != "NA") 
 ```
-I am stuck with the code above however, looking at how they created res_ids I think this is similar to my idx_res_AC_up. Now that I am unsure, how my data can fit in with the rest of this code has confused me. Directly below is part of their code for res_ids
-```
-library(org.Hs.eg.db) 
-library(DOSE)
-library(pathview)
-library(clusterProfiler)
-library(AnnotationHub)
-library(ensembldb)
-library(tidyverse)
-
-## Explore the grch37 table loaded by the annotables library
-grch37
-
-## Return the IDs for the gene symbols in the DE results
-idx <- grch37$symbol %in% rownames(res_tableOE)
-
-ids <- grch37[idx, ]
-
-ids <- ids[non_duplicates, ] 
-
-## Merge the IDs with the results 
-res_ids <- inner_join(res_tableOE_tb, ids, by=c("gene"="symbol"))   
-
-## Create background dataset for hypergeometric testing using all genes tested for significance in the results                 
-allOE_genes <- as.character(res_ids$ensgene)
-
-## Extract significant results
-sigOE <- filter(res_ids, padj < 0.05)
-
-sigOE_genes <- as.character(sigOE$ensgene)
-```
-The rest of the code starts here
 ```
 ## Remove any Entrez duplicates
 res_entrez <- res_entrez[which(duplicated(res_entrez$entrez) == F), ]
