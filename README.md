@@ -1,18 +1,18 @@
 # FastQC
-/home/skehoe/scripts/fastqc_report.sh
+/home/sxxxxx/scripts/fastqc_report.sh
 ```
 #!/bin/bash 
 #SBATCH -J ftest  
-#SBATCH -D /home/skehoe/NO_BACKUP/raw_reads/test
+#SBATCH -D /home/sxxxxx/NO_BACKUP/raw_reads/test
 #SBATCH -o ftest.%j.out 
 #SBATCH --nodes=1 
 #SBATCH --cpus-per-task=1 
 #SBATCH --mem=50M 
 #SBATCH --time=00:20:00 
 #SBATCH --mail-type=all 
-#SBATCH --mail-user=skehoe@zedat.fu-berlin.de 
+#SBATCH --mail-user=
 
-RAW_PATH="/home/skehoe/NO_BACKUP/raw_reads/test"
+RAW_PATH="/home/sxxxxx/NO_BACKUP/raw_reads/test"
 cd $RAW_PATH
 
 for fastq_file in $RAW_PATH; do \
@@ -54,22 +54,22 @@ Sample_9_S9
 ```
 #!/bin/bash
 #SBATCH -J quant
-#SBATCH -D /home/skehoe/NO_BACKUP/ref
+#SBATCH -D /home/sxxxxx/NO_BACKUP/ref
 #SBATCH -o quant.%j.out
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=4G
 #SBATCH --time=09:00:00
 #SBATCH --mail-type=all
-#SBATCH --mail-user=skehoe@zedat.fu-berlin.de
+#SBATCH --mail-
 
-SALM=/home/perugolate/opt/Salmon-0.8.2_linux_x86_64/bin/salmon
+SALM=/home/xxxxxx/opt/Salmon-0.8.2_linux_x86_64/bin/salmon
 
 while IFS= read -r i; do
   $SALM quant --index tx_idx \
                --libType A \
-               --mates1 /home/skehoe/NO_BACKUP/raw_reads/${i}_R1_001.fastq.gz \
-               --mates2 /home/skehoe/NO_BACKUP/raw_reads/${i}_R2_001.fastq.gz \
+               --mates1 /home/sxxxxx/NO_BACKUP/raw_reads/${i}_R1_001.fastq.gz \
+               --mates2 /home/sxxxxx/NO_BACKUP/raw_reads/${i}_R2_001.fastq.gz \
                --threads 1 \
                --output $i
 done < "samples.txt"
