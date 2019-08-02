@@ -429,7 +429,7 @@ idx_res_AC_up <- match(res_AC_up$ensembl, genemap_res_AC_up$ensembl_gene_id_vers
 * genemap_res_AC_up 614
 * genemap_res_CA_up 954
 
-What about their idx's?
+
 # DAVID
 ```
 DAVID
@@ -447,6 +447,9 @@ Download file
 write.table(tr_, file="GOdavid_AB_up.csv", append = FALSE, sep = "\t", na = "NA", dec = ".", row.names = TRUE, col.names= TRUE)
 ```
 ```
+Example code from https://github.com/hbctraining/DGE_workshop/tree/master/lessons
+from hbctraining/DGE_workshop from DGE/workshop/lessons/01-09
+
 data <- read.table("data/Mov10_full_counts.txt", header=T, row.names=1)
 meta <- read.table("meta/Mov10_full_meta.txt", header=T, row.names=1)
 
@@ -685,7 +688,6 @@ clustering_sig_genes <- sig_res_LRT %>%
                   arrange(padj) %>%
                   head(n=1000)
 
-
 # Obtain rlog values for those significant genes
 cluster_rlog <- rld_mat[clustering_sig_genes$gene, ]
 
@@ -703,7 +705,7 @@ cluster_groups <- clusters$df
 group1 <- clusters$df %>%
           filter(cluster == 1)
           
- library(org.Hs.eg.db)
+library(org.Hs.eg.db) # for felis catus?
 library(DOSE)
 library(pathview)
 library(clusterProfiler)
@@ -735,65 +737,131 @@ allOE_genes <- as.character(res_ids$ensgene)
 sigOE <- filter(res_ids, padj < 0.05)
 
 sigOE_genes <- as.character(sigOE$ensgene)
-
+```
+# GO: taking their code as an example and substituting my objects in 
+* using res_AC as an example
+* taking from genemap_res_AC_up 
+```
+res_AC_up$ensembl <- sapply(strsplit(rownames(res_AC_up), split="\\+"), "[", 1)
+library("biomaRt")
+ensembl = useMart("ensembl", dataset = "fcatus_gene_ensembl")
+genemap_res_AC_up <- getBM(attributes = c("ensembl_gene_id", "ensembl_gene_id_version", "entrezgene", "hgnc_symbol"),
+                  filters = "ensembl_gene_id_version",
+                  values = res_AC_up$ensembl,
+                  mart = ensembl)
+idx_res_AC_up <- match(res_AC_up$ensembl, genemap_res_AC_up$ensembl_gene_id_version)
+```
+where res_AC_up origiantes from creating contrasts as follows
+```
+# this is all the results (significant and non-significant)
+res_AC <- results(dds, alpha = 0.05, filterFun = ihw, contrast = c("type", "A", "C"))
+# this is just the genes with at least a 2-fold difference in expression
+res_AC_sig <- subset(res_AC, padj < 0.05 & abs(log2FoldChange) >= 1)
+# abs() is used above to ignore the sign on the fold change value
+# i.e. it returns both up- and down-regulated genes in res_AC_sig
+# instead you might want the up- and down-regulated genes separately
+res_AC_up <- subset(res_AC, padj < 0.05 & log2FoldChange >= 1)
+res_AC_dn <- subset(res_AC, padj < 0.05 & log2FoldChange <= -1)
+# double check that the numbers add up
+(nrow(res_AC_up) + nrow(res_AC_dn)) == nrow(res_AC_sig)
+```
+Now I want to use the significantly up-regulated genes **res_AC_up** to extract GO terms and make nice tables and graphs. Here I am unsure whether to use **res_AC_up** or **genemap_res_AC_up** as its contrast results in significantly up-regulated genes and it has gene names already assigned which I assumre I can call by **genemap_res_AC_up$ensembl_gene_id**
+```
 ## Run GO enrichment analysis 
-ego <- enrichGO(gene = sigOE_genes, 
-                universe = allOE_genes,
+ego_AC_up <- enrichGO(gene = res_AC_up, 
+                universe = res_AC,
                 keyType = "ENSEMBL",
-                OrgDb = org.Hs.eg.db, 
-                ont = "BP", 
+                OrgDb = org.Hs.eg.db, #I searched for Felis catus and it is not listed. 
+                ont = "BP", #I assume I can then change this to "CC" and "MF" later
                 pAdjustMethod = "BH", 
                 qvalueCutoff = 0.05, 
                 readable = TRUE)
                 
 ## Output results from GO analysis to a table
-cluster_summary <- data.frame(ego)
+cluster_summary_AC_up <- data.frame(ego_AC_up)
 
-write.csv(cluster_summary, "results/clusterProfiler_Mov10oe.csv")
+write.csv(cluster_summary_AC_up, "workingdirectory/clusterProfiler__AC_up.csv")
 
 ## Dotplot 
-dotplot(ego, showCategory=50)
+dotplot(ego_AC_up, showCategory=50)
 
 ## Enrichmap clusters the 50 most significant (by padj) GO terms to visualize relationships between terms
-emapplot(ego, showCategory = 50)
-
+emapplot(ego_AC_up, showCategory = 50)
+```
+```
 ## To color genes by log2 fold changes, we need to extract the log2 fold changes from our results table creating a named vector
-OE_foldchanges <- sigOE$log2FoldChange
+AC_up_foldchanges <- res_AC_up$log2FoldChange
 
-names(OE_foldchanges) <- sigOE$gene
-
+names(AC_up_foldchanges) <- res_AC_up$gene 
+```
+For the above code, I don't know how to call on gene from res_AC_up as head(res_AC_up) shows that the list of genes do not have a header name
+```
 ## Cnetplot details the genes associated with one or more terms - by default gives the top 5 significant terms (by padj)
-cnetplot(ego, 
+cnetplot(ego_AC_up, 
          categorySize="pvalue", 
          showCategory = 5, 
-         foldChange=OE_foldchanges, 
+         foldChange=AC_up_foldchanges, 
          vertex.label.font=6)
          
 ## If some of the high fold changes are getting drowned out due to a large range, you could set a maximum fold change value
-OE_foldchanges <- ifelse(OE_foldchanges > 2, 2, OE_foldchanges)
-OE_foldchanges <- ifelse(OE_foldchanges < -2, -2, OE_foldchanges)
+AC_up_foldchanges <- ifelse(AC_up_foldchanges > 2, 2, AC_up_foldchanges)
+AC_up_foldchanges <- ifelse(AC_up_foldchanges < -2, -2, AC_up_foldchanges)
 
-cnetplot(ego, 
+cnetplot(ego_AC_up, 
          categorySize="pvalue", 
          showCategory = 5, 
-         foldChange=OE_foldchanges, 
+         foldChange=AC_up_foldchanges, 
          vertex.label.font=6)
 
 ## Subsetting the ego results without overwriting original `ego` variable
-ego2 <- ego
+ego2_AC_up <- ego_AC_up
 
-ego2@result <- ego@result[c(1,3,4,8,9),]
+ego2_AC_up@result <- ego_AC_up@result[c(1,3,4,8,9),] # I am unsure if this will work on my data or is specific to the examples data
 
 ## Plotting terms of interest
-cnetplot(ego2, 
+cnetplot(ego2_AC_up, 
          categorySize="pvalue", 
-         foldChange=OE_foldchanges, 
+         foldChange=AC_up_foldchange, 
          showCategory = 5, 
          vertex.label.font=6)
-         
+```
+```
 ## Remove any NA values
-res_entrez <- filter(res_ids, entrez != "NA")
+res_AC_up_entrez <- filter(idx_res_AC_up, entrez != "NA") 
+```
+I am stuck with the code above however, looking at how they created res_ids I think this is similar to my idx_res_AC_up. Now that I am unsure, how my data can fit in with the rest of this code has confused me. Directly below is part of their code for res_ids
+```
+library(org.Hs.eg.db) 
+library(DOSE)
+library(pathview)
+library(clusterProfiler)
+library(AnnotationHub)
+library(ensembldb)
+library(tidyverse)
 
+## Explore the grch37 table loaded by the annotables library
+grch37
+
+## Return the IDs for the gene symbols in the DE results
+idx <- grch37$symbol %in% rownames(res_tableOE)
+
+ids <- grch37[idx, ]
+
+ids <- ids[non_duplicates, ] 
+
+## Merge the IDs with the results 
+res_ids <- inner_join(res_tableOE_tb, ids, by=c("gene"="symbol"))   
+
+## Create background dataset for hypergeometric testing using all genes tested for significance in the results                 
+allOE_genes <- as.character(res_ids$ensgene)
+
+## Extract significant results
+sigOE <- filter(res_ids, padj < 0.05)
+
+sigOE_genes <- as.character(sigOE$ensgene)
+```
+The rest of the code starts here
+```
 ## Remove any Entrez duplicates
 res_entrez <- res_entrez[which(duplicated(res_entrez$entrez) == F), ]
 
