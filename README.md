@@ -1,3 +1,56 @@
+# DGE_workshop
+* RNA-seq count distribution
+* Principal Component Analysis (PCA)
+* Hierarchical Clustering Heatmap
+* Gene-level QC
+* quality assessment and exploratory analysis using DESeq2
+        * Transform normalized counts using the rlog transformation
+        * Principal components analysis (PCA)
+        * Hierarchical Clustering
+* Differential expression analysis with DESeq2
+* Running DESeq2
+* Design formula
+* DE analysis
+* DESeq2 differential gene expression analysis workflow
+        * estimate SFs: examining the size factors
+        * estimate gene-wise dispersion: What is dispersion? What does the DESeq2 dispersion represent? How does the dispersion relate to our model? How to estimate the dispersion for each gene separately?
+        * fit curve to gene-wise dispersion estimates
+        * shrink gene-wise dispersion estimates: This shrinkage method is particularly important to reduce false positives in the differential expression analysis. This is a good plot to examine to ensure your data is a good fit for the DESeq2 model. Exploring the dispersion estimates and assessing model fit.
+        * GLM fit for each gene
+* Differential expression analysis with DESeq2: model fitting and hypothesis testing
+        * Generalized Linear Model fit for each gene
+        * Shrunken log2 foldchanges (LFC)
+        * Hypothesis testing using the Wald test: Creating contrasts, DE analysis: contrasts and Wald tests
+        * Building the results table
+        * MA Plot: And now the shrunken results:
+        * DE analysis: results exploration: class(res_tableOE), mcols(res_tableOE, use.names=T), res_tableOE %>% data.frame() %>% View(), NOTE: on p-values set to NA
+        * Multiple test correction: Bonferroni, FDR/Benjamini-Hochberg, FDR/Benjamini-Hochberg
+        * DE analysis: follicle type versus follicle type
+        * Summarizing results: summary(res_tableOE)
+        * Extracting significant differentially expressed genes: padj.cutoff <- 0.05, lfc.cutoff <- 0.58 Now we can subset that table to only keep the significant genes using our pre-defined thresholds: sigOE <- res_tableOE_tb %>%
+        filter(padj < padj.cutoff & abs(log2FoldChange) > lfc.cutoff) 
+        * How many genes are differentially expressed in the Overexpression compared to Control, given our criteria specified above? Does this reduce our results?
+ * Visualizing the results
+        * library(tidyverse) library(ggplot2) library(ggrepel) library(DEGreport) library(RColorBrewer) library(DESeq2) library(pheatmap)
+        * Plotting signicant DE genes Using DESeq2 plotCounts() to plot expression of a single gene Using ggplot2 to plot expression of a single gene Using ggplot2 to plot multiple genes (e.g. top 20)
+        * Heatmap In addition to plotting subsets, we could also extract the normalized values of all the significant genes and plot a heatmap of their expression using pheatmap().
+        * Volcano plot
+* Hypothesis testing: Likelihood ratio test (LRT) An alternative to pair-wise comparisons is to analyze all levels of a factor at once. By default the Wald test is used to generate the results table, but DESeq
+        * Identifying gene clusters exhibiting particular patterns across samples
+* Functional analysis
+        * Over-representation analysis
+        * Hypergeometric testing
+        * Gene Ontology project: GO Ontologies, GO term hierarchy
+        * clusterProfiler: library(org.Hs.eg.db), library(DOSE), library(pathview), library(clusterProfiler), library(AnnotationHub), library(ensembldb), library(tidyverse)
+        * Visualizing clusterProfiler results
+        * gProfiler
+        * Functional class scoring tools
+        * Gene set enrichment analysis using clusterProfiler and Pathview
+        * Pathway topology tools
+        * SPIA
+        * Other Tools: GeneMANIA, Co-expression clustering
+        * Resources for functional analysis: see links
+        
 # FastQC
 /home/sxxxxx/scripts/fastqc_report.sh
 ```
