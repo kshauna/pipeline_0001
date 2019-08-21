@@ -997,3 +997,17 @@ https://support.bioconductor.org/p/105938/
 * Love: With defaults, normalized=TRUE and transform=TRUE, plotted on the y-axis is the normalized count + 0.5. The y-axis is log scale, but the tick marks are on the count scale. So it's not log counts on the y-axis. The normalized count is given by counts(dds, normalized=TRUE) and this is K_ij / s_ij in the language of the DESeq2 paper and the formula in the vignette. If I were to make the pseudocount smaller, if a gene has a 0, it would inflate the vertical space between 0 and 1, where there is little useful information, and squash the part of the plot between 1 and max(count), where there is more useful information. Actually, this fact is related to why we suggest to use variance stabilizing transformations, and why log(x + small pseudocount) is a bad decision for data exploration of counts. You can't compare DESeq2 normalized counts across genes. I would recommend to compare TPM, for example, estimated by a transcript quantifier and aggregated to the gene level using a package like tximport.
 
 What is the best R tools package to use this .csv file (consists of Ensembl gene ID, baseMean, log2FoldChange, lfcSE, stat, pvalue, padj) as an input and give me Gene Ontology analysis and Gene Set Enrichment as outputs?
+
+https://www.biostars.org/p/16505/
+* I'm not sure I understand the difference between the Ensembl-Gene-Database and the Entrez-database. I have two datasets that measure gene-expression. One uses Ensembl-IDs to identify the different genes, and the other one uses Entrez-IDs. I understand that Ensembl and Entrez are both Gene-Databases and use different ID-Schemes. I've also heard that I can use e.g. biomart to convert from one ID to the other. What I was not able to determine was if the mapping was bijective. So here are my questions: Does every Ensembl-Gene ID have a corresponding Entrez-ID? And if so, why weren't the two ever consolidated? If not, what are the differences? Does one database contain more genes than the other? What are the scopes of the different databases? What is the "standard" ID that people use when exchanging data? What should I use in my further data processing? Should I convert the Entrez-IDs to Ensembl-IDs or vice versa?
+* Just to clarify: Entrez is not a gene database. It's the name of the NCBI infrastructure which provides access to all of the NCBI databases. One of those is the Gene database, so you would say "Entrez Gene". and another answer Unfortunately there is not necessarily an one-to-one mapping between Entrez Gene and Ensembl Gene IDs. Although it is improving. As you can read here: http://www.ncbi.nlm.nih.gov/CCDS/CcdsBrowse.cgi they are working on consolidating them for human and mouse.
+
+If may even differ per database you use to convert one ID to the other. So if you use the links of Entrez Gene to Ensembl this may give a different mapping than when you use the Ensembl Biomart for converting.
+
+Personally, I would prefer Entrez Gene IDS as they are more stable IDs and more easily to map outdated IDs to current IDs. This is much harder for Ensembl Gene IDs.
+
+Both could be considered standards. Another option is the HGNC symbol, which are more commonly used as the name for a gene.
+
+I might have an e-mail from Ensembl or Entrez Gene that explains how they map their IDs to each other.
+
+----------------------------------------------------------------------------------------------------------------------------------> I asked the following question to Ensembl: **check out Ensembl Helpdesk answer here**
