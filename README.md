@@ -981,3 +981,18 @@ plotP(spia_result, threshold=0.05)
 ## Look at pathway 03013 and view kegglink
 subset(spia_result, ID == "03013")
 ```
+### 210819
+Normalized counts plus a pseudocount of 0.5 are shown by default. Normalized whether the counts should be normalized by size factor (default is TRUE). 
+```
+png("AMH.png")
+library("DESeq2")
+plotCounts(dds, gene = "ENSFCAG00000033020.2", intgroup = "type", xlab = "Follicle type", main = "AMH")
+dev.off()
+```
+Sample_1_S1 Sample_2_S2 Sample_3_S3 Sample_4_S4 Sample_5_S5 Sample_6_S6 Sample_7_S7 Sample_8_S8 Sample_9_S9 
+   21718486    29688127     1055911    49308877    27360455    32492627    34705628     7860648    13177842 
+
+https://support.bioconductor.org/p/105938/
+* What is the unit of the "normalized count" of the y axis of the "plotCounts" plot? ?plotCounts in R, then it says "Normalized counts plus a pseudocount of 0.5 are shown by default." and also there's this "normalized = TRUE", and  "transform = TRUE" arguments. So is the y axis just raw read counts divided by DESeq2-estimated size factor? or has it been logged? (loge? log2? log10?) Also, why is the psudocount 0.5 here? (it's just to avoid taking log of zero, right? but why don't you set it smaller, say, 0.001?) What happens if we set normalized = FALSE? Likewise,  what happens if we set transform = FALSE?
+* So with the way DESeq2 normalizes raw read counts without the effect of gene size, can we compare the expression of two (or multiple) different genes within the same sample? If not, is there other recommended way of normalization for this purpose?
+* Love: With defaults, normalized=TRUE and transform=TRUE, plotted on the y-axis is the normalized count + 0.5. The y-axis is log scale, but the tick marks are on the count scale. So it's not log counts on the y-axis. The normalized count is given by counts(dds, normalized=TRUE) and this is K_ij / s_ij in the language of the DESeq2 paper and the formula in the vignette. If I were to make the pseudocount smaller, if a gene has a 0, it would inflate the vertical space between 0 and 1, where there is little useful information, and squash the part of the plot between 1 and max(count), where there is more useful information. Actually, this fact is related to why we suggest to use variance stabilizing transformations, and why log(x + small pseudocount) is a bad decision for data exploration of counts. You can't compare DESeq2 normalized counts across genes. I would recommend to compare TPM, for example, estimated by a transcript quantifier and aggregated to the gene level using a package like tximport.
