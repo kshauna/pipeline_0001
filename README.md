@@ -446,7 +446,7 @@ Download file
 >   View(tr_)
 write.table(tr_, file="GOdavid_AB_up.csv", append = FALSE, sep = "\t", na = "NA", dec = ".", row.names = TRUE, col.names= TRUE)
 ```
-# Summary
+# Summary 
 * **Type A** are primordial follicles
 * **Type B** are primary follicles
 * **Type C** are secondary follicles
@@ -504,6 +504,7 @@ What other outputs do I need?
 
 # GO enrichment with topGO
 https://www.biostars.org/p/350710/#350712. The input to topGO is a named list of genes and P-values, like this:
+```
 head(genes)
 ANXA2 DHCR24   GBE1    GLA  PRDX1 PSMD14 
 0      0      0      0      0      0 
@@ -565,5 +566,5 @@ ggplot(goEnrichment, aes(x=Term, y=-log10(KS))) +
    coord_flip()
 
 sessionInfo()
-
+```
 
