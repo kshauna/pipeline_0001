@@ -463,8 +463,8 @@ Contrasts between follicle types (alpha 0.05 padj 0.05 absLFC >=1) were created 
 * **res_BC_up** up-regulated genes primary-secondary contrast
 
 * DESeq2 output
-        * 0.05_1 ENSFCAGxx baseMean log2FC lfcSE stat pvalue padj weight
-        * res_AB_sigord - up_ord and dn_ord + AC and BC, respectively
+       * 0.05_1 ENSFCAGxx baseMean log2FC lfcSE stat pvalue padj weight
+       * res_AB_sigord - up_ord and dn_ord + AC and BC, respectively
 
 I have the following outputs:
 * **bioMart genemap output:** No. ensembl_gene_id ensembl_gene_id_version entrez_gene_id hgnc_symbol
@@ -478,7 +478,7 @@ I have the following outputs:
        * **to do** write.table take out NA values, take out No. and alpha-numerically sort by go_id sort() arrange()
 
 * **DESeq2 results** for res_AB - up and dn + AC and BC, respectively + log2FC coloured
-        * **to do** write.table numerically sort by log2FC sort() arrange() highest-lowest
+       * **to do** write.table numerically sort by log2FC sort() arrange() highest-lowest
 
 * **DAVID genelist output:** entrez_gene_ID Name Species
        * results for genelist_AB - up and dn + AC and BC, respectively
@@ -486,21 +486,21 @@ I have the following outputs:
        * **to do** write.table take out NA values, take out Species and alpha sort by Name sort() arrange()
 
 * **DAVID func. annot. table output:** ID Gene Name Species COG ont GOBP GOCC GO MF INTERPRO KEGG PATH PIR SUPERFAM SMART UP KEY UP SEQ FEATS..... 
-       * results for AB dn only **should I continue with DAVID?**
-       * **to do** the rest
-       * **to do** write.table take out NA values, Species, COG ont INTERPRO KEGG PATH PIR SUPERFAM SMART UP KEY UP SEQ FEATS....., create separate ID Gene Name GOBP GOCC GO MF, and sort alphabetically
+      * results for AB dn only **should I continue with DAVID?**
+      * **to do** the rest
+      * **to do** write.table take out NA values, Species, COG ont INTERPRO KEGG PATH PIR SUPERFAM SMART UP KEY UP SEQ FEATS....., create separate ID Gene Name GOBP GOCC GO MF, and sort alphabetically
 
 * **bioMart querychromo output:** No. ensembl_gene_id ensembl_gene_id_version hgnc chromosome_name stat position end position band
-       * results for querychromo_AB - up and dn + AC and BC, respectively
+      * results for querychromo_AB - up and dn + AC and BC, respectively
        
 
 What other outputs do I need? 
 * **bioMart pvalue output:** hgnc p_value
-       * I need this as input for topGO
-       * needs to be padjs from res_AB - up and dn + AC and BC, respectively
-       * **left col** hgnc (or gene ID) **right col** p_value (padj)
-       * results for pvalGO_AB - up and dn + AC and BC, respectively
-       * **output** ggplot(goEnrichment..)
+      * I need this as input for topGO
+      * needs to be padjs from res_AB - up and dn + AC and BC, respectively
+      * **left col** hgnc (or gene ID) **right col** p_value (padj)
+      * results for pvalGO_AB - up and dn + AC and BC, respectively
+      * **output** ggplot(goEnrichment..)
 
 # GO enrichment with topGO
 https://www.biostars.org/p/350710/#350712. The input to topGO is a named list of genes and P-values, like this:
