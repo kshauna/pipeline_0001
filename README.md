@@ -1,56 +1,3 @@
-# DGE_workshop
-* RNA-seq count distribution
-* Principal Component Analysis (PCA)
-* Hierarchical Clustering Heatmap
-* Gene-level QC
-* quality assessment and exploratory analysis using DESeq2
-        * Transform normalized counts using the rlog transformation
-        * Principal components analysis (PCA)
-        * Hierarchical Clustering
-* Differential expression analysis with DESeq2
-* Running DESeq2
-* Design formula
-* DE analysis
-* DESeq2 differential gene expression analysis workflow
-        * estimate SFs: examining the size factors
-        * estimate gene-wise dispersion: What is dispersion? What does the DESeq2 dispersion represent? How does the dispersion relate to our model? How to estimate the dispersion for each gene separately?
-        * fit curve to gene-wise dispersion estimates
-        * shrink gene-wise dispersion estimates: This shrinkage method is particularly important to reduce false positives in the differential expression analysis. This is a good plot to examine to ensure your data is a good fit for the DESeq2 model. Exploring the dispersion estimates and assessing model fit.
-        * GLM fit for each gene
-* Differential expression analysis with DESeq2: model fitting and hypothesis testing
-        * Generalized Linear Model fit for each gene
-        * Shrunken log2 foldchanges (LFC)
-        * Hypothesis testing using the Wald test: Creating contrasts, DE analysis: contrasts and Wald tests
-        * Building the results table
-        * MA Plot: And now the shrunken results:
-        * DE analysis: results exploration: class(res_tableOE), mcols(res_tableOE, use.names=T), res_tableOE %>% data.frame() %>% View(), NOTE: on p-values set to NA
-        * Multiple test correction: Bonferroni, FDR/Benjamini-Hochberg, FDR/Benjamini-Hochberg
-        * DE analysis: follicle type versus follicle type
-        * Summarizing results: summary(res_tableOE)
-        * Extracting significant differentially expressed genes: padj.cutoff <- 0.05, lfc.cutoff <- 0.58 Now we can subset that table to only keep the significant genes using our pre-defined thresholds: sigOE <- res_tableOE_tb %>%
-        filter(padj < padj.cutoff & abs(log2FoldChange) > lfc.cutoff) 
-        * How many genes are differentially expressed in the Overexpression compared to Control, given our criteria specified above? Does this reduce our results?
- * Visualizing the results
-        * library(tidyverse) library(ggplot2) library(ggrepel) library(DEGreport) library(RColorBrewer) library(DESeq2) library(pheatmap)
-        * Plotting signicant DE genes Using DESeq2 plotCounts() to plot expression of a single gene Using ggplot2 to plot expression of a single gene Using ggplot2 to plot multiple genes (e.g. top 20)
-        * Heatmap In addition to plotting subsets, we could also extract the normalized values of all the significant genes and plot a heatmap of their expression using pheatmap().
-        * Volcano plot
-* Hypothesis testing: Likelihood ratio test (LRT) An alternative to pair-wise comparisons is to analyze all levels of a factor at once. By default the Wald test is used to generate the results table, but DESeq
-        * Identifying gene clusters exhibiting particular patterns across samples
-* Functional analysis
-        * Over-representation analysis
-        * Hypergeometric testing
-        * Gene Ontology project: GO Ontologies, GO term hierarchy
-        * clusterProfiler: library(org.Hs.eg.db), library(DOSE), library(pathview), library(clusterProfiler), library(AnnotationHub), library(ensembldb), library(tidyverse)
-        * Visualizing clusterProfiler results
-        * gProfiler
-        * Functional class scoring tools
-        * Gene set enrichment analysis using clusterProfiler and Pathview
-        * Pathway topology tools
-        * SPIA
-        * Other Tools: GeneMANIA, Co-expression clustering
-        * Resources for functional analysis: see links
-        
 # FastQC
 /home/sxxxxx/scripts/fastqc_report.sh
 ```
@@ -499,7 +446,114 @@ Download file
 >   View(tr_)
 write.table(tr_, file="GOdavid_AB_up.csv", append = FALSE, sep = "\t", na = "NA", dec = ".", row.names = TRUE, col.names= TRUE)
 ```
+# Summary
+* **Type A** are primordial follicles
+* **Type B** are primary follicles
+* **Type C** are secondary follicles
+
+Contrasts between follicle types (alpha 0.05 padj 0.05 absLFC >=1) were created as follows:
+* **res_AB_dn** down-regulated genes primordial-primary contrast
+* **res_AB_sig** all significantly expressed genes primordial-primary contrast
+* **res_AB_up** up-regulated genes primordial-primary contrast
+* **res_AC_dn** down-regulated genes primordial-secondary contrast
+* **res_AC_sig** all significantly expressed genes primordial-secondary contrast
+* **res_AC_up** up-regulated genes primordial-secondary contrast
+* **res_BC_dn** down-regulated genes primary-secondary contrast
+* **res_BC_sig** all significantly expressed genes primary-secondary contrast
+* **res_BC_up** up-regulated genes primary-secondary contrast
+
+* DESeq2 output
+       * 0.05_1 ENSFCAGxx baseMean log2FC lfcSE stat pvalue padj weight
+       * res_AB_sigord - up_ord and dn_ord + AC and BC, respectively
+
+I have the following outputs:
+* bioMart genemap output: No. ensembl_gene_id ensembl_gene_id_version entrez_gene_id hgnc_symbol
+       * results for genemap_AB - up and dn + AC and BC, respectively
+* bioMart gores output: No. emsembl_gene_id ensembl_gene_id_version go_id name_1006 def_1006
+       * results for gores_AB - up and dn + AC and BC, respectively
+* DESeq2 results for res_AB - up and dn + AC and BC, respectively + log2FC coloured
+* DAVID genelist output: entrez_gene_ID Name Species
+       * results for genelist_AB - up and dn + AC and BC, respectively
+* DAVID func. annot. table output: ID Gene Name Species COG ont GOBP GOCC GO MF INTERPRO KEGG PATH PIR SUPERFAM SMART UP KEY UP SEQ FEATS..... 
+       * results for AB dn only **should I continue with DAVID?**
+* bioMart querychromo output: No. ensembl_gene_id ensembl_gene_id_version hgnc chromosome_name stat position end position band
+       * results for querychromo_AB - up and dn + AC and BC, respectively
+       
+     * **output** need to write.tables for supplement
+
+What other outputs do I need? 
+* bioMart pvalue output: hgnc p_value
+       * I need this as input for topGO
+       * needs to be padjs from res_AB - up and dn + AC and BC, respectively
+       * **left col** hgnc (or gene ID) **right col** p_value (padj)
+       * results for pvalGO_AB - up and dn + AC and BC, respectively
+       * **output** ggplot(goEnrichment..)
 
 
+
+
+# GO enrichment with topGO
+https://www.biostars.org/p/350710/#350712. The input to topGO is a named list of genes and P-values, like this:
+head(genes)
+ANXA2 DHCR24   GBE1    GLA  PRDX1 PSMD14 
+0      0      0      0      0      0 
+tail(genes)
+CTTNBP2NL      METTL7B       AKR1C3      SLC5A11        TIMP4      PPP2R2C 
+7.395843e-07 1.496372e-06 4.328879e-05 1.612348e-04 2.620590e-04 9.728924e-04 
+
+range(genes)
+[1] 0.0000000000 0.0009728924
+
+#The p-values are used to rank the genes, which is important when using the Kolmogorov-Smirnov test.
+#You can then run topGO like this (here with GO BP as database against which enrichment is performed).
+
+require(topGO)
+require(org.Hs.eg.db)
+
+selection <- function(allScore){ return(allScore < 0.05)} # function that returns TRUE/FALSE for p-values<0.05
+allGO2genes <- annFUN.org(whichOnto="BP", feasibleGenes=NULL, mapping="org.Hs.eg.db", ID="symbol")
+GOdata <- new("topGOdata",
+              ontology="BP",
+              allGenes=genes,
+              annot=annFUN.GO2genes,
+              GO2genes=allGO2genes,
+              geneSel=selection,
+              nodeSize=10)
+
+#In order to make use of the rank information, use Kolmogorov-Smirnov (K-S) test:
+results.ks <- runTest(GOdata, algorithm="classic", statistic="ks")
+goEnrichment <- GenTable(GOdata, KS=results.ks, orderBy="KS", topNodes=20)
+goEnrichment <- goEnrichment[goEnrichment$KS<0.05,]
+goEnrichment <- goEnrichment[,c("GO.ID","Term","KS")]
+goEnrichment$Term <- gsub(" [a-z]*\\.\\.\\.$", "", goEnrichment$Term)
+goEnrichment$Term <- gsub("\\.\\.\\.$", "", goEnrichment$Term)
+goEnrichment$Term <- paste(goEnrichment$GO.ID, goEnrichment$Term, sep=", ")
+goEnrichment$Term <- factor(goEnrichment$Term, levels=rev(goEnrichment$Term))
+goEnrichment$KS <- as.numeric(goEnrichment$KS)
+
+#Plot the results (the enrichment score is just negative log (base 10) of the enrichment P-value):
+require(ggplot2)
+ggplot(goEnrichment, aes(x=Term, y=-log10(KS))) +
+   stat_summary(geom = "bar", fun.y = mean, position = "dodge") +
+   xlab("Biological process") +
+   ylab("Enrichment") +
+   ggtitle("Title") +
+   scale_y_continuous(breaks = round(seq(0, max(-log10(goEnrichment$KS)), by = 2), 1)) +
+   theme_bw(base_size=24) +
+   theme(
+      legend.position='none',
+      legend.background=element_rect(),
+      plot.title=element_text(angle=0, size=24, face="bold", vjust=1),
+      axis.text.x=element_text(angle=0, size=18, face="bold", hjust=1.10),
+      axis.text.y=element_text(angle=0, size=18, face="bold", vjust=0.5),
+      axis.title=element_text(size=24, face="bold"),
+      legend.key=element_blank(),     #removes the border
+      legend.key.size=unit(1, "cm"),      #Sets overall area/size of the legend
+      legend.text=element_text(size=18),  #Text size
+      title=element_text(size=18)) +
+   guides(colour=guide_legend(override.aes=list(size=2.5))) +
+   coord_flip()
+
+sessionInfo()
 
 
