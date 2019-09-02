@@ -504,4 +504,133 @@ What other outputs do I need?
 
 # GO enrichment with topGO
 https://www.biostars.org/p/350710/#350712. The input to topGO is a named list of genes and P-values, like this:
+```
+source("https://bioconductor.org/biocLite.R")
+biocLite("topGO")
+biocLite("GO.db")
+biocLite("biomaRt")
+biocLite("Rgraphviz")
 
+# Load the required R packages
+library(topGO)
+library(GO.db)
+library(biomaRt)
+library(Rgraphviz)
+
+write.table(res_AB,"res_AB.csv",sep=",",quote=FALSE,row.names=TRUE, col.names = NA)
+write.table(res_AB_sig,"res_AB_sig.csv",sep=",",quote=FALSE,row.names=TRUE, col.names = NA)
+
+# Gene universe file
+AB_univ_exp_data = read.table('res_AB.csv', header=TRUE, sep=',')
+AB_univ_genes = as.character(AB_univ_exp_data[,1])
+
+# Read in genes of interest
+AB_sig_candi_list = read.table('res_AB_sig.csv', header=TRUE, sep=',')
+AB_sig_candi_list = as.character(AB_sig_candi_list[,1])
+
+length(AB_univ_genes)
+head(AB_univ_genes)
+
+length(AB_sig_candi_list)
+head(AB_sig_candi_list)
+
+# Step 2: Create GO annotation
+# create GO db for genes to be used using biomaRt - please note that this takes a while
+db = useMart('ENSEMBL_MART_ENSEMBL', dataset='fcatus_gene_ensembl', host="www.ensembl.org")
+
+ABuniv_go_ids = getBM(attributes=c('go_id', 'external_gene_name', 'namespace_1003'), 
+                     filters='external_gene_name', 
+                     values=AB_univ_genes, mart=db)
+
+# 'external_gene_name' to ‘entrezgene‘ if required.
+
+listAttributes(db)
+
+# build the gene 2 GO annotation list (needed to create topGO object)
+ABuniv_gene2GO = unstack(ABuniv_go_ids[,c(1,2)])
+
+# remove any candidate genes without GO annotation
+ABuniv_keep = AB_sig_candi_list %in% ABuniv_go_ids[,2]
+ABuniv_keep = which(ABuniv_keep==TRUE)
+AB_sig_candi_list = AB_sig_candi_list[ABuniv_keep]
+
+# make named factor showing which genes are of interest
+AB_geneList = factor(as.integer(AB_univ_genes %in% AB_sig_candi_list))
+names(AB_geneList) = AB_univ_genes
+```
+# Step 3: Make topGO data object
+AB_GOdata = new('topGOdata', ontology='BP', 
+                allGenes = AB_geneList, 
+                annot = annFUN.gene2GO, 
+                gene2GO = ABuniv_gene2GO)
+
+# Step 4: Test for significance
+```
+# define test using the classic algorithm with fisher (refer to [1] if you want to understand how the different algorithms work)
+class_fish_ABres = runTest(AB_GOdata, algorithm='classic', statistic='fisher')
+
+# define test using the weight01 algorithm (default) with fisher
+weight_fish_resAB = runTest(AB_GOdata, algorithm='weight01', statistic='fisher') 
+
+# generate a table of results: we can use the GenTable function to generate a summary table with the results from tests applied to the topGOdata object.
+ABallGO = usedGO(AB_GOdata)
+all_resAB = GenTable(AB_GOdata, 
+                     weightFisherAB=weight_fish_resAB, 
+                     orderBy='weightFisher', 
+                     topNodes=length(ABallGO))
+
+# Step 5: Correcting for multiple testing
+#performing BH correction on our p values
+p.adj = round(p.adjust(all_resAB$weightFisherAB,method="BH"), digits = 4)
+
+# create the file with all the statistics from GO analysis
+all_resAB_final = cbind(all_resAB,p.adj)
+all_resAB_final = all_resAB_final[order(all_resAB_final$p.adj),]
+
+#get list of significant GO before multiple testing correction
+resAB.table.p = all_resAB_final[which(all_resAB_final$weightFisherAB<=0.001),]
+
+#get list of significant GO after multiple testing correction
+resAB.table.bh = all_resAB_final[which(all_resAB_final$p.adj<=0.05),]
+
+#save first top 50 ontolgies sorted by adjusted pvalues
+write.table(all_resAB_final[1:50,], "summary_topGO_analysis.csv",sep=",", quote=FALSE, row.names=FALSE)
+
+# PLOT the GO hierarchy plot: the enriched GO terms are colored in yellow/red according to significance level
+
+pdf(file='topGOPlotAB_fullnames.pdf', 
+    height=12, width=12, 
+    paper='special', 
+    pointsize=18)
+
+showSigOfNodes(AB_GOdata, score(weight_fish_resAB), useInfo = "none", sigForAll=FALSE, firstSigNodes=2,.NO.CHAR=50)
+dev.off()
+
+# Step 6: Get all the genes in your significant GO TERMS
+
+myABterms = resAB.table.p$GO.ID # change it to resAB.table.bh$GO.ID if working with BH corrected values
+myABgenes = genesInTerm(AB_GOdata, myABterms)
+
+var=c()
+for (i in 1:length(myABterms))
+{
+  myABterm=myABterms[i]
+  myABgenesforterm= myABgenes[myABterm][[1]]
+  myABgenesforterm=paste(myABgenesforterm, collapse=',')
+  var[i]=paste("GOTerm",myABterm,"genes-", myABgenesforterm)
+}
+
+write.table(var,"genetoGOABmapping.txt",sep="\t",quote=F)
+
+# print the package versions used ---#
+sessionInfo()
+
+#check inside objects created up until error
+head(AB_univ_exp_data)
+head(AB_univ_genes)
+head(AB_sig_candi_list)
+head(db)
+head(ABuniv_go_ids)
+head(ABuniv_gene2GO)
+head(AB_geneList)
+```
