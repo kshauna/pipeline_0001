@@ -447,21 +447,6 @@ Download file
 write.table(tr_, file="GOdavid_AB_up.csv", append = FALSE, sep = "\t", na = "NA", dec = ".", row.names = TRUE, col.names= TRUE)
 ```
 # Summary 
-* **Type A** are primordial follicles
-* **Type B** are primary follicles
-* **Type C** are secondary follicles
-
-Contrasts between follicle types (alpha 0.05 padj 0.05 absLFC >=1) were created as follows:
-* **res_AB_dn** down-regulated genes primordial-primary contrast
-* **res_AB_sig** all significantly expressed genes primordial-primary contrast
-* **res_AB_up** up-regulated genes primordial-primary contrast
-* **res_AC_dn** down-regulated genes primordial-secondary contrast
-* **res_AC_sig** all significantly expressed genes primordial-secondary contrast
-* **res_AC_up** up-regulated genes primordial-secondary contrast
-* **res_BC_dn** down-regulated genes primary-secondary contrast
-* **res_BC_sig** all significantly expressed genes primary-secondary contrast
-* **res_BC_up** up-regulated genes primary-secondary contrast
-
 * DESeq2 output
        * 0.05_1 ENSFCAGxx baseMean log2FC lfcSE stat pvalue padj weight
        * res_AB_sigord - up_ord and dn_ord + AC and BC, respectively
@@ -493,7 +478,6 @@ I have the following outputs:
 * **bioMart querychromo output:** No. ensembl_gene_id ensembl_gene_id_version hgnc chromosome_name stat position end position band
       * results for querychromo_AB - up and dn + AC and BC, respectively
        
-
 What other outputs do I need? 
 * **bioMart pvalue output:** hgnc p_value
       * I need this as input for topGO
@@ -502,136 +486,93 @@ What other outputs do I need?
       * results for pvalGO_AB - up and dn + AC and BC, respectively
       * **output** ggplot(goEnrichment..)
 
-# GO enrichment with topGO
-https://www.biostars.org/p/350710/#350712. The input to topGO is a named list of genes and P-values, like this:
+# topGO
 ```
-source("https://bioconductor.org/biocLite.R")
-biocLite("topGO")
-biocLite("GO.db")
-biocLite("biomaRt")
-biocLite("Rgraphviz")
-
-# Load the required R packages
-library(topGO)
-library(GO.db)
-library(biomaRt)
-library(Rgraphviz)
-
-write.table(res_AB,"res_AB.csv",sep=",",quote=FALSE,row.names=TRUE, col.names = NA)
-write.table(res_AB_sig,"res_AB_sig.csv",sep=",",quote=FALSE,row.names=TRUE, col.names = NA)
+write.table(res_BC,"res_BC.csv",sep=",",quote=FALSE,row.names=TRUE, col.names = NA)
+write.table(res_BC_sig,"res_BC_sig.csv",sep=",",quote=FALSE,row.names=TRUE, col.names = NA)
 
 # Gene universe file
-AB_univ_exp_data = read.table('res_AB.csv', header=TRUE, sep=',')
-AB_univ_genes = as.character(AB_univ_exp_data[,1])
+BC_univ_exp_data <- read.table('res_BC.csv', header=TRUE, sep=',')
+BC_univ_genes <- as.character(BC_univ_exp_data[,1])
 
 # Read in genes of interest
-AB_sig_candi_list = read.table('res_AB_sig.csv', header=TRUE, sep=',')
-AB_sig_candi_list = as.character(AB_sig_candi_list[,1])
-
-length(AB_univ_genes)
-head(AB_univ_genes)
-
-length(AB_sig_candi_list)
-head(AB_sig_candi_list)
+BC_sig_candi_list <- read.table('res_BC_sig.csv', header=TRUE, sep=',')
+BC_sig_candi_list <- as.character(BC_sig_candi_list[,1])
 
 # Step 2: Create GO annotation
-# create GO db for genes to be used using biomaRt - please note that this takes a while
-db = useMart('ENSEMBL_MART_ENSEMBL', dataset='fcatus_gene_ensembl', host="www.ensembl.org")
+# create GO db for genes to be used using biomaRt
+db <- useMart('ENSEMBL_MART_ENSEMBL', dataset='fcatus_gene_ensembl', host="www.ensembl.org")
 
-ABuniv_go_ids = getBM(attributes=c('go_id', 'external_gene_name', 'namespace_1003'), 
-                     filters='external_gene_name', 
-                     values=AB_univ_genes, mart=db)
-
-# 'external_gene_name' to ‘entrezgene‘ if required.
-
-listAttributes(db)
+BCuniv_go_ids <- getBM(attributes=c('go_id', 'ensembl_gene_id_version', 'namespace_1003'), 
+                       filters='ensembl_gene_id_version', 
+                       values=BC_univ_genes, mart=db)
 
 # build the gene 2 GO annotation list (needed to create topGO object)
-ABuniv_gene2GO = unstack(ABuniv_go_ids[,c(1,2)])
-
-# remove any candidate genes without GO annotation
-ABuniv_keep = AB_sig_candi_list %in% ABuniv_go_ids[,2]
-ABuniv_keep = which(ABuniv_keep==TRUE)
-AB_sig_candi_list = AB_sig_candi_list[ABuniv_keep]
+BCuniv_gene2GO <- unstack(BCuniv_go_ids[,c(1,2)])
 
 # make named factor showing which genes are of interest
-AB_geneList = factor(as.integer(AB_univ_genes %in% AB_sig_candi_list))
-names(AB_geneList) = AB_univ_genes
-```
+BC_geneList <- factor(as.integer(BC_univ_genes%in%BC_sig_candi_list))
+names(BC_geneList) <- BC_univ_genes
+
 # Step 3: Make topGO data object
-```
-AB_GOdata = new('topGOdata', ontology='BP', 
-                allGenes = AB_geneList, 
-                annot = annFUN.gene2GO, 
-                gene2GO = ABuniv_gene2GO)
-```
-# Step 4: Test for significance
-```
-# define test using the classic algorithm with fisher (refer to [1] if you want to understand how the different algorithms work)
-class_fish_ABres = runTest(AB_GOdata, algorithm='classic', statistic='fisher')
+BC_GOdata <- new('topGOdata', ontology='BP', 
+                 allGenes = BC_geneList, 
+                 annot = annFUN.gene2GO, 
+                 gene2GO = BCuniv_gene2GO)
 
 # define test using the weight01 algorithm (default) with fisher
-weight_fish_resAB = runTest(AB_GOdata, algorithm='weight01', statistic='fisher') 
+weight_fish_resBC <- runTest(BC_GOdata, algorithm='weight01', statistic='fisher') 
 
 # generate a table of results: we can use the GenTable function to generate a summary table with the results from tests applied to the topGOdata object.
-ABallGO = usedGO(AB_GOdata)
-all_resAB = GenTable(AB_GOdata, 
-                     weightFisherAB=weight_fish_resAB, 
-                     orderBy='weightFisher', 
-                     topNodes=length(ABallGO))
+BCallGO <- usedGO(BC_GOdata)
+all_resBC <- GenTable(BC_GOdata, 
+                      weightFisherBC=weight_fish_resBC, 
+                      orderBy='weightFisher', 
+                      topNodes=length(BCallGO))
 
 # Step 5: Correcting for multiple testing
 #performing BH correction on our p values
-p.adj = round(p.adjust(all_resAB$weightFisherAB,method="BH"), digits = 4)
+p.adj <- round(p.adjust(all_resBC$weightFisherBC,method="BH"), digits = 4)
 
 # create the file with all the statistics from GO analysis
-all_resAB_final = cbind(all_resAB,p.adj)
-all_resAB_final = all_resAB_final[order(all_resAB_final$p.adj),]
+all_resBC_final <- cbind(all_resBC,p.adj)
+all_resBC_final <- all_resBC_final[order(all_resBC_final$p.adj),]
 
 #get list of significant GO before multiple testing correction
-resAB.table.p = all_resAB_final[which(all_resAB_final$weightFisherAB<=0.001),]
+resBC.table.p <- all_resBC_final[which(all_resBC_final$weightFisherBC<=0.001),]
 
 #get list of significant GO after multiple testing correction
-resAB.table.bh = all_resAB_final[which(all_resAB_final$p.adj<=0.05),]
+resBC.table.bh <- all_resBC_final[which(all_resBC_final$p.adj<=0.05),]
 
 #save first top 50 ontolgies sorted by adjusted pvalues
-write.table(all_resAB_final[1:50,], "summary_topGO_analysis.csv",sep=",", quote=FALSE, row.names=FALSE)
+write.table(all_resBC_final[1:50,], "summary_BCtopGO_analysis.csv",sep=",", quote=FALSE, row.names=FALSE)
 
-# PLOT the GO hierarchy plot: the enriched GO terms are colored in yellow/red according to significance level
+# Plot the GO hierarchy plot: the enriched GO terms are colored in yellow/red according to significance level
 
-pdf(file='topGOPlotAB_fullnames.pdf', 
+pdf(file='topGOPlotBC_fullnames.pdf', 
     height=12, width=12, 
     paper='special', 
     pointsize=18)
 
-showSigOfNodes(AB_GOdata, score(weight_fish_resAB), useInfo = "none", sigForAll=FALSE, firstSigNodes=2,.NO.CHAR=50)
+showSigOfNodes(BC_GOdata, score(weight_fish_resBC), useInfo = "none", sigForAll=FALSE, firstSigNodes=2,.NO.CHAR=50)
 dev.off()
 
 # Step 6: Get all the genes in your significant GO TERMS
 
-myABterms = resAB.table.p$GO.ID # change it to resAB.table.bh$GO.ID if working with BH corrected values
-myABgenes = genesInTerm(AB_GOdata, myABterms)
+myBCterms <- resBC.table.p$GO.ID # change it to resBC.table.bh$GO.ID if working with BH corrected values
+myBCgenes <- genesInTerm(BC_GOdata, myBCterms)
 
 var=c()
-for (i in 1:length(myABterms))
+for (i in 1:length(myBCterms))
 {
-  myABterm=myABterms[i]
-  myABgenesforterm= myABgenes[myABterm][[1]]
-  myABgenesforterm=paste(myABgenesforterm, collapse=',')
-  var[i]=paste("GOTerm",myABterm,"genes-", myABgenesforterm)
+  myBCterm=myBCterms[i]
+  myBCgenesforterm= myBCgenes[myBCterm][[1]]
+  myBCgenesforterm=paste(myBCgenesforterm, collapse=',')
+  var[i]=paste("GOTerm",myBCterm,"genes-", myBCgenesforterm)
 }
 
-write.table(var,"genetoGOABmapping.txt",sep="\t",quote=F)
+write.table(var,"genetoGOBCmapping.txt",sep="\t",quote=F)
 
 # print the package versions used ---#
 sessionInfo()
-
-#check inside objects created up until error
-head(AB_univ_exp_data)
-head(AB_univ_genes)
-head(AB_sig_candi_list)
-head(db)
-head(ABuniv_go_ids)
-head(ABuniv_gene2GO)
-head(AB_geneList)
 ```
