@@ -559,11 +559,12 @@ AB_geneList = factor(as.integer(AB_univ_genes %in% AB_sig_candi_list))
 names(AB_geneList) = AB_univ_genes
 ```
 # Step 3: Make topGO data object
+```
 AB_GOdata = new('topGOdata', ontology='BP', 
                 allGenes = AB_geneList, 
                 annot = annFUN.gene2GO, 
                 gene2GO = ABuniv_gene2GO)
-
+```
 # Step 4: Test for significance
 ```
 # define test using the classic algorithm with fisher (refer to [1] if you want to understand how the different algorithms work)
