@@ -576,3 +576,112 @@ write.table(var,"genetoGOBCmapping.txt",sep="\t",quote=F)
 # print the package versions used ---#
 sessionInfo()
 ```
+# REVIGO
+Revigo plot
+```
+# A plotting R script produced by the REVIGO server at http://revigo.irb.hr/
+  # If you found REVIGO useful in your work, please cite the following reference:
+  # Supek F et al. "REVIGO summarizes and visualizes long lists of Gene Ontology
+  # terms" PLoS ONE 2011. doi:10.1371/journal.pone.0021800
+  
+  
+  # --------------------------------------------------------------------------
+  # If you don't have the ggplot2 package installed, uncomment the following line:
+  # install.packages( "ggplot2" );
+  library( ggplot2 );
+  # --------------------------------------------------------------------------
+  # If you don't have the scales package installed, uncomment the following line:
+  # install.packages( "scales" );
+  library( scales );
+  
+  
+  # --------------------------------------------------------------------------
+  # Here is your data from REVIGO. Scroll down for plot configuration options.
+  
+  revigo.names <- c("term_ID","description","frequency_%","plot_X","plot_Y","plot_size","log10_p_value","uniqueness","dispensability");
+  revigo.data <- rbind(c("GO:0007160","cell-matrix adhesion", 0.051, 3.906,-4.903, 3.817,-3.1024,0.911,0.000),
+  c("GO:0007229","integrin-mediated signaling pathway", 0.056, 2.806, 6.449, 3.860,-5.3872,0.736,0.000),
+  c("GO:0048251","elastic fiber assembly", 0.001,-2.279,-4.957, 2.127,-4.4437,0.779,0.043),
+  c("GO:0043046","DNA methylation involved in gamete generation", 0.004,-5.420, 2.138, 2.663,-3.3098,0.667,0.046),
+  c("GO:0046839","phospholipid dephosphorylation", 0.052, 1.157,-2.521, 3.825,-2.2240,0.834,0.098),
+  c("GO:0034587","piRNA metabolic process", 0.004,-5.450,-2.828, 2.731,-2.4157,0.914,0.119),
+  c("GO:0019915","lipid storage", 0.032, 6.014, 2.701, 3.611,-2.4342,0.788,0.162),
+  c("GO:0055114","oxidation-reduction process",15.060,-0.646,-3.693, 6.286,-3.0223,0.854,0.166),
+  c("GO:0010951","negative regulation of endopeptidase activity", 0.157, 1.507, 2.617, 4.304,-4.7696,0.748,0.194),
+  c("GO:1990535","neuron projection maintenance", 0.000,-1.176,-5.343, 1.301,-2.3354,0.821,0.196),
+  c("GO:0019800","peptide cross-linking via chondroitin 4-sulfate glycosaminoglycan", 0.001,-5.736,-3.327, 2.260,-2.4413,0.831,0.196),
+  c("GO:0030335","positive regulation of cell migration", 0.076, 4.275, 2.717, 3.988,-2.5850,0.625,0.199),
+  c("GO:0018158","protein oxidation", 0.002,-6.333,-2.047, 2.398,-2.1798,0.829,0.215),
+  c("GO:0071230","cellular response to amino acid stimulus", 0.019, 1.030, 8.797, 3.390,-3.7212,0.848,0.265),
+  c("GO:0032489","regulation of Cdc42 protein signal transduction", 0.001, 1.965, 6.841, 2.155,-2.4413,0.769,0.268),
+  c("GO:0051382","kinetochore assembly", 0.018,-2.523,-4.318, 3.354,-3.0915,0.818,0.358),
+  c("GO:0035987","endodermal cell differentiation", 0.011,-4.873, 4.065, 3.156,-2.9586,0.646,0.378),
+  c("GO:0043932","ossification involved in bone remodeling", 0.001,-5.997, 3.923, 2.064,-2.3354,0.746,0.379),
+  c("GO:0051592","response to calcium ion", 0.018, 0.376, 8.954, 3.357,-2.4449,0.885,0.393),
+  c("GO:0034375","high-density lipoprotein particle remodeling", 0.003,-3.103, 2.456, 2.568,-2.2211,0.614,0.402),
+  c("GO:1900272","negative regulation of long-term synaptic potentiation", 0.000, 3.520, 4.563, 1.462,-2.1791,0.705,0.403),
+  c("GO:0035469","determination of pancreatic left/right asymmetry", 0.002,-5.413, 4.850, 2.394,-2.3354,0.716,0.410),
+  c("GO:0032964","collagen biosynthetic process", 0.005,-5.499, 3.359, 2.789,-2.1824,0.713,0.412),
+  c("GO:0060047","heart contraction", 0.045,-5.517, 3.862, 3.761,-2.4498,0.758,0.435),
+  c("GO:0035137","hindlimb morphogenesis", 0.008,-5.528, 4.375, 2.997,-2.1785,0.708,0.442),
+  c("GO:0030195","negative regulation of blood coagulation", 0.009,-1.612, 5.012, 3.064,-2.4413,0.583,0.487),
+  c("GO:0051603","proteolysis involved in cellular protein catabolic process", 0.759, 1.503,-3.773, 4.988,-2.8069,0.883,0.493),
+  c("GO:0060113","inner ear receptor cell differentiation", 0.016,-4.791, 4.424, 3.300,-2.3391,0.649,0.496),
+  c("GO:2001046","positive regulation of integrin-mediated signaling pathway", 0.001, 3.341, 5.722, 2.270,-3.6021,0.700,0.499),
+  c("GO:0038026","reelin-mediated signaling pathway", 0.002, 3.073, 7.107, 2.436,-2.7696,0.767,0.509),
+  c("GO:0048739","cardiac muscle fiber development", 0.001,-5.080, 5.016, 2.279,-2.8633,0.666,0.523),
+  c("GO:0048549","positive regulation of pinocytosis", 0.001, 3.361, 1.230, 2.134,-2.3363,0.683,0.524),
+  c("GO:0051781","positive regulation of cell division", 0.023, 4.410, 3.960, 3.477,-2.4145,0.725,0.525),
+  c("GO:1905342","positive regulation of protein localization to kinetochore", 0.001, 5.471, 2.832, 2.173,-2.3354,0.747,0.527),
+  c("GO:0007129","synapsis", 0.018,-2.580,-2.290, 3.362,-3.1675,0.707,0.555),
+  c("GO:1901379","regulation of potassium ion transmembrane transport", 0.014, 4.968, 1.625, 3.258,-2.4473,0.698,0.609),
+  c("GO:0034113","heterotypic cell-cell adhesion", 0.009, 4.136,-4.744, 3.053,-2.3197,0.852,0.613),
+  c("GO:0060686","negative regulation of prostatic bud formation", 0.001,-3.170, 3.846, 2.097,-2.3354,0.573,0.616),
+  c("GO:0033627","cell adhesion mediated by integrin", 0.013, 4.400,-4.540, 3.231,-2.1752,0.912,0.628),
+  c("GO:0043691","reverse cholesterol transport", 0.003, 7.106, 0.687, 2.646,-2.2211,0.806,0.634),
+  c("GO:0060397","JAK-STAT cascade involved in growth hormone signaling pathway", 0.001, 2.210, 7.661, 1.934,-2.3354,0.752,0.684),
+  c("GO:0072678","T cell migration", 0.007, 6.438,-0.956, 2.961,-2.3382,0.776,0.695));
+  
+  one.data <- data.frame(revigo.data);
+  names(one.data) <- revigo.names;
+  one.data <- one.data [(one.data$plot_X != "null" & one.data$plot_Y != "null"), ];
+  one.data$plot_X <- as.numeric( as.character(one.data$plot_X) );
+  one.data$plot_Y <- as.numeric( as.character(one.data$plot_Y) );
+  one.data$plot_size <- as.numeric( as.character(one.data$plot_size) );
+  one.data$log10_p_value <- as.numeric( as.character(one.data$log10_p_value) );
+  one.data$frequency <- as.numeric( as.character(one.data$frequency) );
+  one.data$uniqueness <- as.numeric( as.character(one.data$uniqueness) );
+  one.data$dispensability <- as.numeric( as.character(one.data$dispensability) );
+  head(one.data);
+  
+  
+  # --------------------------------------------------------------------------
+  # Names of the axes, sizes of the numbers and letters, names of the columns,
+  # etc. can be changed below
+  
+  p1 <- ggplot( data = one.data );
+  p1 <- p1 + geom_point( aes( plot_X, plot_Y, colour = log10_p_value, size = plot_size), alpha = I(0.6) ) + scale_size_area();
+  p1 <- p1 + scale_colour_gradientn( colours = c("blue", "green", "yellow", "red"), limits = c( min(one.data$log10_p_value), 0) );
+  p1 <- p1 + geom_point( aes(plot_X, plot_Y, size = plot_size), shape = 21, fill = "transparent", colour = I (alpha ("black", 0.6) )) + scale_size_area();
+  p1 <- p1 + scale_size( range=c(5, 30)) + theme_bw(); # + scale_fill_gradientn(colours = heat_hcl(7), limits = c(-300, 0) );
+  ex <- one.data [ one.data$dispensability < 0.15, ]; 
+  p1 <- p1 + geom_text( data = ex, aes(plot_X, plot_Y, label = description), colour = I(alpha("black", 0.85)), size = 3 );
+  p1 <- p1 + labs (y = "semantic space x", x = "semantic space y");
+  p1 <- p1 + theme(legend.key = element_blank()) ;
+  one.x_range = max(one.data$plot_X) - min(one.data$plot_X);
+  one.y_range = max(one.data$plot_Y) - min(one.data$plot_Y);
+  p1 <- p1 + xlim(min(one.data$plot_X)-one.x_range/10,max(one.data$plot_X)+one.x_range/10);
+  p1 <- p1 + ylim(min(one.data$plot_Y)-one.y_range/10,max(one.data$plot_Y)+one.y_range/10);
+  
+  
+  
+  # --------------------------------------------------------------------------
+  # Output the plot to screen
+  
+  p1;
+  
+  # Uncomment the line below to also save the plot to a file.
+  # The file type depends on the extension (default=pdf).
+  
+  # ggsave("C:/Users/path_to_your_file/revigo-plot.pdf");
+```
