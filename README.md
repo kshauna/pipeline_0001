@@ -577,7 +577,7 @@ write.table(var,"genetoGOBCmapping.txt",sep="\t",quote=F)
 sessionInfo()
 ```
 # REVIGO
-Revigo plot
+Scatterplot & Table
 ```
 # A plotting R script produced by the REVIGO server at http://revigo.irb.hr/
   # If you found REVIGO useful in your work, please cite the following reference:
@@ -685,3 +685,99 @@ Revigo plot
   
   # ggsave("C:/Users/path_to_your_file/revigo-plot.pdf");
 ```
+Treemap
+```
+# A treemap R script produced by the REVIGO server at http://revigo.irb.hr/
+# If you found REVIGO useful in your work, please cite the following reference:
+# Supek F et al. "REVIGO summarizes and visualizes long lists of Gene Ontology
+# terms" PLoS ONE 2011. doi:10.1371/journal.pone.0021800
+
+# author: Anton Kratz <anton.kratz@gmail.com>, RIKEN Omics Science Center, Functional Genomics Technology Team, Japan
+# created: Fri, Nov 02, 2012  7:25:52 PM
+# last change: Fri, Nov 09, 2012  3:20:01 PM
+
+# -----------------------------------------------------------------------------
+# If you don't have the treemap package installed, uncomment the following line:
+# install.packages( "treemap" );
+library(treemap) 								# treemap package by Martijn Tennekes
+
+# Set the working directory if necessary
+# setwd("C:/Users/username/workingdir");
+
+# --------------------------------------------------------------------------
+# Here is your data from REVIGO. Scroll down for plot configuration options.
+
+revigo.names <- c("term_ID","description","freqInDbPercent","abslog10pvalue","uniqueness","dispensability","representative");
+revigo.data <- rbind(c("GO:0007160","cell-matrix adhesion",0.051,3.1024,0.911,0.000,"cell-matrix adhesion"),
+c("GO:0033627","cell adhesion mediated by integrin",0.013,2.1752,0.912,0.628,"cell-matrix adhesion"),
+c("GO:0034113","heterotypic cell-cell adhesion",0.009,2.3197,0.852,0.613,"cell-matrix adhesion"),
+c("GO:0007229","integrin-mediated signaling pathway",0.056,5.3872,0.736,0.000,"integrin-mediated signaling pathway"),
+c("GO:0071230","cellular response to amino acid stimulus",0.019,3.7212,0.848,0.265,"integrin-mediated signaling pathway"),
+c("GO:0072678","T cell migration",0.007,2.3382,0.776,0.695,"integrin-mediated signaling pathway"),
+c("GO:0030335","positive regulation of cell migration",0.076,2.5850,0.625,0.199,"integrin-mediated signaling pathway"),
+c("GO:1905342","positive regulation of protein localization to kinetochore",0.001,2.3354,0.747,0.527,"integrin-mediated signaling pathway"),
+c("GO:0019915","lipid storage",0.032,2.4342,0.788,0.162,"integrin-mediated signaling pathway"),
+c("GO:0051592","response to calcium ion",0.018,2.4449,0.885,0.393,"integrin-mediated signaling pathway"),
+c("GO:1900272","negative regulation of long-term synaptic potentiation",0.000,2.1791,0.705,0.403,"integrin-mediated signaling pathway"),
+c("GO:0048549","positive regulation of pinocytosis",0.001,2.3363,0.683,0.524,"integrin-mediated signaling pathway"),
+c("GO:0051603","proteolysis involved in cellular protein catabolic process",0.759,2.8069,0.883,0.493,"integrin-mediated signaling pathway"),
+c("GO:0010951","negative regulation of endopeptidase activity",0.157,4.7696,0.748,0.194,"integrin-mediated signaling pathway"),
+c("GO:1901379","regulation of potassium ion transmembrane transport",0.014,2.4473,0.698,0.609,"integrin-mediated signaling pathway"),
+c("GO:0043691","reverse cholesterol transport",0.003,2.2211,0.806,0.634,"integrin-mediated signaling pathway"),
+c("GO:2001046","positive regulation of integrin-mediated signaling pathway",0.001,3.6021,0.700,0.499,"integrin-mediated signaling pathway"),
+c("GO:0060397","JAK-STAT cascade involved in growth hormone signaling pathway",0.001,2.3354,0.752,0.684,"integrin-mediated signaling pathway"),
+c("GO:0038026","reelin-mediated signaling pathway",0.002,2.7696,0.767,0.509,"integrin-mediated signaling pathway"),
+c("GO:0032489","regulation of Cdc42 protein signal transduction",0.001,2.4413,0.769,0.268,"integrin-mediated signaling pathway"),
+c("GO:0030195","negative regulation of blood coagulation",0.009,2.4413,0.583,0.487,"integrin-mediated signaling pathway"),
+c("GO:0051781","positive regulation of cell division",0.023,2.4145,0.725,0.525,"integrin-mediated signaling pathway"),
+c("GO:0048251","elastic fiber assembly",0.001,4.4437,0.779,0.043,"elastic fiber assembly"),
+c("GO:1990535","neuron projection maintenance",0.000,2.3354,0.821,0.196,"elastic fiber assembly"),
+c("GO:0051382","kinetochore assembly",0.018,3.0915,0.818,0.358,"elastic fiber assembly"),
+c("GO:0043046","DNA methylation involved in gamete generation",0.004,3.3098,0.667,0.046,"DNA methylation involved in gamete generation"),
+c("GO:0018158","protein oxidation",0.002,2.1798,0.829,0.215,"DNA methylation involved in gamete generation"),
+c("GO:0007129","synapsis",0.018,3.1675,0.707,0.555,"DNA methylation involved in gamete generation"),
+c("GO:0019800","peptide cross-linking via chondroitin 4-sulfate glycosaminoglycan",0.001,2.4413,0.831,0.196,"DNA methylation involved in gamete generation"),
+c("GO:0034375","high-density lipoprotein particle remodeling",0.003,2.2211,0.614,0.402,"DNA methylation involved in gamete generation"),
+c("GO:0060686","negative regulation of prostatic bud formation",0.001,2.3354,0.573,0.616,"DNA methylation involved in gamete generation"),
+c("GO:0060113","inner ear receptor cell differentiation",0.016,2.3391,0.649,0.496,"DNA methylation involved in gamete generation"),
+c("GO:0034587","piRNA metabolic process",0.004,2.4157,0.914,0.119,"DNA methylation involved in gamete generation"),
+c("GO:0043932","ossification involved in bone remodeling",0.001,2.3354,0.746,0.379,"DNA methylation involved in gamete generation"),
+c("GO:0035469","determination of pancreatic left/right asymmetry",0.002,2.3354,0.716,0.410,"DNA methylation involved in gamete generation"),
+c("GO:0035987","endodermal cell differentiation",0.011,2.9586,0.646,0.378,"DNA methylation involved in gamete generation"),
+c("GO:0032964","collagen biosynthetic process",0.005,2.1824,0.713,0.412,"DNA methylation involved in gamete generation"),
+c("GO:0048739","cardiac muscle fiber development",0.001,2.8633,0.666,0.523,"DNA methylation involved in gamete generation"),
+c("GO:0035137","hindlimb morphogenesis",0.008,2.1785,0.708,0.442,"DNA methylation involved in gamete generation"),
+c("GO:0060047","heart contraction",0.045,2.4498,0.758,0.435,"DNA methylation involved in gamete generation"),
+c("GO:0046839","phospholipid dephosphorylation",0.052,2.2240,0.834,0.098,"phospholipid dephosphorylation"),
+c("GO:0055114","oxidation-reduction process",15.060,3.0223,0.854,0.166,"phospholipid dephosphorylation"));
+
+stuff <- data.frame(revigo.data);
+names(stuff) <- revigo.names;
+
+stuff$abslog10pvalue <- as.numeric( as.character(stuff$abslog10pvalue) );
+stuff$freqInDbPercent <- as.numeric( as.character(stuff$freqInDbPercent) );
+stuff$uniqueness <- as.numeric( as.character(stuff$uniqueness) );
+stuff$dispensability <- as.numeric( as.character(stuff$dispensability) );
+
+# by default, outputs to a PDF file
+pdf( file="revigo_treemap.pdf", width=16, height=9 ) # width and height are in inches
+
+# check the tmPlot command documentation for all possible parameters - there are a lot more
+tmPlot(
+	stuff,
+	index = c("representative","description"),
+	vSize = "abslog10pvalue",
+	type = "categorical",
+	vColor = "representative",
+	title = "REVIGO Gene Ontology treemap",
+	inflate.labels = FALSE,      # set this to TRUE for space-filling group labels - good for posters
+	lowerbound.cex.labels = 0,   # try to draw as many labels as possible (still, some small squares may not get a label)
+	bg.labels = "#CCCCCCAA",     # define background color of group labels
+												       # "#CCCCCC00" is fully transparent, "#CCCCCCAA" is semi-transparent grey, NA is opaque
+	position.legend = "none"
+)
+
+dev.off()
+```
+Interactive graph is being a prick. 
+The whole system is being an absolute prick. 
