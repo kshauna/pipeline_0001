@@ -579,24 +579,15 @@ sessionInfo()
 # REVIGO
 Scatterplot & Table
 ```
-# A plotting R script produced by the REVIGO server at http://revigo.irb.hr/
-  # If you found REVIGO useful in your work, please cite the following reference:
   # Supek F et al. "REVIGO summarizes and visualizes long lists of Gene Ontology
   # terms" PLoS ONE 2011. doi:10.1371/journal.pone.0021800
   
   
-  # --------------------------------------------------------------------------
-  # If you don't have the ggplot2 package installed, uncomment the following line:
   # install.packages( "ggplot2" );
   library( ggplot2 );
-  # --------------------------------------------------------------------------
-  # If you don't have the scales package installed, uncomment the following line:
+
   # install.packages( "scales" );
   library( scales );
-  
-  
-  # --------------------------------------------------------------------------
-  # Here is your data from REVIGO. Scroll down for plot configuration options.
   
   revigo.names <- c("term_ID","description","frequency_%","plot_X","plot_Y","plot_size","log10_p_value","uniqueness","dispensability");
   revigo.data <- rbind(c("GO:0007160","cell-matrix adhesion", 0.051, 3.906,-4.903, 3.817,-3.1024,0.911,0.000),
@@ -779,5 +770,3 @@ tmPlot(
 
 dev.off()
 ```
-Interactive graph is being a prick. 
-The whole system is being an absolute prick. 
