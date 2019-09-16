@@ -770,3 +770,25 @@ tmPlot(
 
 dev.off()
 ```
+### 160919
+```
+> View(res_BA_dn) 1020
+> View(res_BA_sig) 2226
+> View(res_BA_up) 1206
+> View(res_CA_dn) 614
+> View(res_CA_sig) 1568
+> View(res_CA_up) 954
+> View(res_CB_dn) 32 
+> View(res_CB_sig) 154 
+> View(res_CB_up) 122
+
+> View(res_AB_dn) 1206
+> View(res_AB_sig) 2226
+> View(res_AB_up) 1020
+> View(res_AC_dn) 954
+> View(res_AC_sig) 1568
+> View(res_AC_up) 614
+> View(res_BC_dn) 122
+> View(res_BC_sig) 154
+> View(res_BC_up) 32
+```
