@@ -792,3 +792,15 @@ dev.off()
 > View(res_BC_sig) 154
 > View(res_BC_up) 32
 ```
+### 190919
+topGO statistics
+* define test using the weight01 algorithm (default) with fisher
+	* weight_fish_resBCMF <- runTest(BCMF_GOdata, algorithm='weight01', statistic='fisher') 
+	* generate a table of results: using weightFisher & orderBy = weightFisher
+	* Correcting for multiple testing performing BH correction on our p values round(p.adjust(all_resBCMF$weightFisherBCMF,method="BH")
+	* create the file with all the statistics from GO analysis
+	* get list of significant GO before multiple testing correction weightFisher <=0.001
+	* get list of significant GO after multiple testing correction p.adj <=0.05
+	* write.table save first top 50 ontolgies sorted by adjusted pvalues
+	
+
