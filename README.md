@@ -1,5 +1,23 @@
-# Table of Contents
-# Dependencies
+# Citated packages
+bioMart
+cowplot
+DESeq2
+dplyr
+FastQC
+hexbin
+IHW
+json
+MASS
+ntd
+pheatmap
+RColorBrewer
+readr
+Salmon
+tidyr
+tximport
+visreg
+vsn
+
 ## FastQC
 /home/sxxxxx/scripts/fastqc_report.sh
 ```
@@ -173,18 +191,8 @@ all(file.exists(files))
 > names(files) <- dirs
 > all(file.exists(files))
 [1] TRUE
-> tx2gene <- read_csv("tx2gene.csv")
-Error in read_csv("tx2gene.csv") : could not find function "read_csv"
 > tx2gene <- read.csv("tx2gene.csv")
-> txi <- tximport(files, type = "salmon", tx2gene = tx2gene)
-Error in tximport(files, type = "salmon", tx2gene = tx2gene) : 
-  could not find function "tximport"
 > library(tximport)
-> txi <- tximport(files, type = "salmon", tx2gene = tx2gene)
-reading in files with read_tsv
-1 Error in readInfRepFish(x, type) : 
-  importing inferential replicates for Salmon or Sailfish requires package `rjson`.
-  to skip this step, set dropInfReps=TRUE
 > install.packages("rjson")
 > txi <- tximport(files, type = "salmon", tx2gene = tx2gene)
 reading in files with read_tsv
@@ -215,8 +223,6 @@ all(rownames(sampleTable) == colnames(txi$counts))
 ```
 ```
 > sample_df <- data.frame(sample = colnames(txi$counts), stringsAsFactors = FALSE)
-> sampleData <- read_csv("sample_data.csv")
-Error in read_csv("sample_data.csv") : could not find function "read_csv"
 > sampleData <- read.csv("sample_data.csv")
 > sampleTable <- dplyr::inner_join(sample_df, sampleData)
 Joining, by = "sample"
@@ -382,9 +388,6 @@ select_salm <- order(rowMeans(counts(dds, normalized=T)),decreasing = T)[1:50]
 nt_salm <- normTransform(dds)
 log2.norm.counts_salm <- assay(nt_salm)[select_salm,]
 install.packages("pheatmap")
-pheatmap(log2.norm.counts_salm, cluster_rows = F, show_rownames = T, cluster_cols = T, legend = T, main = "Pheatmap 50 most highly expressed genes")
-Error in pheatmap(log2.norm.counts_salm, cluster_rows = F, show_rownames = T,  : 
-  could not find function "pheatmap"
 library(pheatmap)
 pheatmap(log2.norm.counts_salm, cluster_rows = F, show_rownames = T, cluster_cols = T, legend = T, main = "Pheatmap 50 most highly expressed genes")
 (log2.norm.counts_salm)
