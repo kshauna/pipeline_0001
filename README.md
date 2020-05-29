@@ -1,5 +1,5 @@
-#Table of Contents
-#Dependencies
+# Table of Contents
+# Dependencies
 ## FastQC
 /home/sxxxxx/scripts/fastqc_report.sh
 ```
