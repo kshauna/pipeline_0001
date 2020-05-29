@@ -459,6 +459,30 @@ bmp15_fd %>% dplyr::select(-se) %>% mutate_at(c("coef", "lower", "upper"), funct
 # From basic glm:
 bmp15_fit
 ```
+# Functional Annotation Clustering
+## DAVID
+```
+* Input ENTREZ IDs and select for Felis catus
+* DAVID accepts: ENSEMBL_GENE_ID, ENSEMBL_TRANSCRIPT_ID, ENTREZ_GENE_ID
+* Input DEG ENTREZs that were created from the 'no version ENSFCAGs' with biomaRt, down- and up-regulated were not input seperately
+* Deselect defaults and select  GOTERM_BP_FAT,  GOTERM_CC_FAT, GOTERM_MF_FAT, and KEGG pathways
+* Select Functional Annotation Clustering
+* Options: 
+        * Kappa Similarity: Similarity Term Overlap 3 and Similarity Threshold 0.60
+        * Classification: Initial Group Membership 3 Final Group Membership 3 Multiple Linkage Threshold 0.50
+        * Enrichment Thresholds (EASE) 0.2
+        * Display: Fold Change, Benjamini, and FDR
+        * Outputs: Annotation Cluster No., Enrichment Score, Count, P_Value, Benjamini, Fold Change, FDR.
+```
+## MetaScape
+Metascape's current architecture does not support domestic cat thus, we converted Felis Catus ENTREZ IDs into human orthologs, and then proceeded with Metascape analysis. 
+
+* go to https://biit.cs.ut.ee/gprofiler/gorth.cgi
+* use g:Orth tool
+* convert those identifiers from your species to human (notice, your IDs should be space separated, comma does not work) 
+* then you can take the converted ENSG (Ensembl Gene IDs) IDs for Metascape analysis
+* Metascape's 'Express analysis' was selected
+
 ## sessionInfo()
 ```
 > sessionInfo()
