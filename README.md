@@ -286,12 +286,6 @@ res_AB_dn <- subset(res_AB, padj < 0.05 & log2FoldChange <= -1)
 # double check that the numbers add up
 (nrow(res_AB_up) + nrow(res_AB_dn)) == nrow(res_AB_sig)
 ```
-> View(res_AB_up) 1020
-> View(res_BA_up) 1206
-> View(res_BC_up) 32
-> View(res_CB_up) 122
-> View(res_AC_up) 614
-> View(res_CA_up) 954
 ```
 > library(IHW)
 > res_AB <- results(dds, alpha = 0.05, filterFun = ihw, contrast = c("type", "A", "B"))
@@ -364,9 +358,7 @@ meanSdPlot(assay(vsd))
 ntd <- normTransform(dds)
 library("vsn")
 meanSdPlot(assay(ntd))
-
 meanSdPlot(assay(vsd))
-
 meanSdPlot(assay(rld))
 ```
 # Heatmap
