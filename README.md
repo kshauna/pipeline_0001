@@ -443,7 +443,7 @@ bmp15_fd %>% dplyr::select(-se) %>% mutate_at(c("coef", "lower", "upper"), funct
 # From basic glm:
 bmp15_fit
 ```
-# Functional Annotation Clustering
+## Functional Annotation Clustering
 ## DAVID
 ```
 * Input ENTREZ IDs and select for Felis catus
