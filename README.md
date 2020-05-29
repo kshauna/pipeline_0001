@@ -1,37 +1,4 @@
-# Cited packages
-**bioMart** https://bioconductor.org/packages/release/bioc/html/biomaRt.html Durinck S, Spellman P, Birney E, Huber W (2009). “Mapping identifiers for the integration of genomic datasets with the R/Bioconductor package biomaRt.” Nature Protocols, 4, 1184–1191 & Durinck S, Moreau Y, Kasprzyk A, Davis S, De Moor B, Brazma A, Huber W (2005). “BioMart and Bioconductor: a powerful link between biological databases and microarray data analysis.” Bioinformatics, 21, 3439–3440.
-
-**cowplot** https://cran.r-project.org/web/packages/cowplot/index.html Author: Claus O. Wilke ORCID iD [aut, cre]
-
-**DESeq2** https://bioconductor.org/packages/release/bioc/html/DESeq2.html Love MI, Huber W, Anders S (2014). “Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2.” Genome Biology, 15, 550. doi: 10.1186/s13059-014-0550-8.
-
-**dplyr** https://cran.r-project.org/web/packages/dplyr/index.html Author:	Hadley Wickham ORCID iD [aut, cre], Romain François ORCID iD [aut], Lionel Henry [aut], Kirill Müller ORCID iD [aut], RStudio [cph, fnd]
-
-**FastQC** https://www.bioinformatics.babraham.ac.uk/projects/fastqc/ Andrews, S. (2010). FastQC:  A Quality Control Tool for High Throughput Sequence Data [Online]. 
-
-**ggplot2** https://cran.r-project.org/web/packages/ggplot2/index.html Author: Hadley Wickham [aut, cre], Winston Chang [aut], Lionel Henry [aut], Thomas Lin Pedersen [aut], Kohske Takahashi [aut], Claus Wilke [aut], Kara Woo [aut], Hiroaki Yutani [aut], Dewey Dunnington [aut], RStudio [cph]
-
-**hexbin** https://cran.r-project.org/web/packages/hexbin/hexbin.pdf Author: Dan Carr <dcarr@voxel.galaxy.gmu.edu>, ported by Nicholas
-Lewin-Koh and Martin Maechler <maechler@stat.math.ethz.ch>, contains copies of lattice functions written by Deepayan Sarkar <deepayan.sarkar@r-project.org>
-
-**IHW** http://bioconductor.org/packages/release/bioc/html/IHW.html Ignatiadis N, Klaus B, Zaugg J, Huber W (2016). “Data-driven hypothesis weighting increases detection power in genome-scale multiple testing.” Nature Methods. doi: 10.1038/nmeth.3885 & Ignatiadis N, Huber W (2017). “Covariate-powered weighted multiple testing with false discovery rate control.” arXiv. doi: arXiv:1701.05179.
-
-**MASS** https://cran.r-project.org/web/packages/MASS/index.html Author: Brian Ripley [aut, cre, cph], Bill Venables [ctb], Douglas M. Bates [ctb], Kurt Hornik [trl] (partial port ca 1998), Albrecht Gebhardt [trl] (partial port ca 1998), David Firth [ctb]
-
-**pheatmap** https://cran.r-project.org/web/packages/pheatmap/index.html Author: Raivo Kolde
-
-**RColorBrewer** https://cran.r-project.org/web/packages/RColorBrewer/index.html Author: Erich Neuwirth [aut, cre]
-
-**readr** https://cran.r-project.org/web/packages/readr/index.html Author: Hadley Wickham [aut], Jim Hester [aut, cre], Romain Francois [aut], R Core Team [ctb] (Date time code adapted from R), RStudio [cph, fnd], Jukka Jylänki [ctb, cph] (grisu3 implementation), Mikkel Jørgensen [ctb, cph] (grisu3 implementation)
-
-**Salmon** https://combine-lab.github.io/salmon/ Patro, R., Duggal, G., Love, M. I., Irizarry, R. A., & Kingsford, C. (2017). Salmon provides fast and bias-aware quantification of transcript expression. Nature Methods.
-
-**tidyr** https://cran.r-project.org/web/packages/tidyr/index.html Author: Hadley Wickham [aut, cre], Lionel Henry [aut], RStudio [cph]
-
-**tximport** https://bioconductor.org/packages/release/bioc/html/tximport.html Soneson C, Love MI, Robinson MD (2015). “Differential analyses for RNA-seq: transcript-level estimates improve gene-level inferences.” F1000Research, 4. doi: 10.12688/f1000research.7563.1.
-
-**visreg** https://cran.r-project.org/web/packages/visreg/visreg.pdf Author: Patrick Breheny, Woodrow Burchett
-
+# Analysis workflow
 ## FastQC
 /home/sxxxxx/scripts/fastqc_report.sh
 ```
@@ -550,3 +517,36 @@ loaded via a namespace (and not attached):
 [96] digest_0.6.23          xtable_1.8-4           munsell_0.5.0         
 >
 ```
+# Cited packages
+**bioMart** https://bioconductor.org/packages/release/bioc/html/biomaRt.html Durinck S, Spellman P, Birney E, Huber W (2009). “Mapping identifiers for the integration of genomic datasets with the R/Bioconductor package biomaRt.” Nature Protocols, 4, 1184–1191 & Durinck S, Moreau Y, Kasprzyk A, Davis S, De Moor B, Brazma A, Huber W (2005). “BioMart and Bioconductor: a powerful link between biological databases and microarray data analysis.” Bioinformatics, 21, 3439–3440.
+
+**cowplot** https://cran.r-project.org/web/packages/cowplot/index.html Author: Claus O. Wilke ORCID iD [aut, cre]
+
+**DESeq2** https://bioconductor.org/packages/release/bioc/html/DESeq2.html Love MI, Huber W, Anders S (2014). “Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2.” Genome Biology, 15, 550. doi: 10.1186/s13059-014-0550-8.
+
+**dplyr** https://cran.r-project.org/web/packages/dplyr/index.html Author:	Hadley Wickham ORCID iD [aut, cre], Romain François ORCID iD [aut], Lionel Henry [aut], Kirill Müller ORCID iD [aut], RStudio [cph, fnd]
+
+**FastQC** https://www.bioinformatics.babraham.ac.uk/projects/fastqc/ Andrews, S. (2010). FastQC:  A Quality Control Tool for High Throughput Sequence Data [Online]. 
+
+**ggplot2** https://cran.r-project.org/web/packages/ggplot2/index.html Author: Hadley Wickham [aut, cre], Winston Chang [aut], Lionel Henry [aut], Thomas Lin Pedersen [aut], Kohske Takahashi [aut], Claus Wilke [aut], Kara Woo [aut], Hiroaki Yutani [aut], Dewey Dunnington [aut], RStudio [cph]
+
+**hexbin** https://cran.r-project.org/web/packages/hexbin/hexbin.pdf Author: Dan Carr <dcarr@voxel.galaxy.gmu.edu>, ported by Nicholas
+Lewin-Koh and Martin Maechler <maechler@stat.math.ethz.ch>, contains copies of lattice functions written by Deepayan Sarkar <deepayan.sarkar@r-project.org>
+
+**IHW** http://bioconductor.org/packages/release/bioc/html/IHW.html Ignatiadis N, Klaus B, Zaugg J, Huber W (2016). “Data-driven hypothesis weighting increases detection power in genome-scale multiple testing.” Nature Methods. doi: 10.1038/nmeth.3885 & Ignatiadis N, Huber W (2017). “Covariate-powered weighted multiple testing with false discovery rate control.” arXiv. doi: arXiv:1701.05179.
+
+**MASS** https://cran.r-project.org/web/packages/MASS/index.html Author: Brian Ripley [aut, cre, cph], Bill Venables [ctb], Douglas M. Bates [ctb], Kurt Hornik [trl] (partial port ca 1998), Albrecht Gebhardt [trl] (partial port ca 1998), David Firth [ctb]
+
+**pheatmap** https://cran.r-project.org/web/packages/pheatmap/index.html Author: Raivo Kolde
+
+**RColorBrewer** https://cran.r-project.org/web/packages/RColorBrewer/index.html Author: Erich Neuwirth [aut, cre]
+
+**readr** https://cran.r-project.org/web/packages/readr/index.html Author: Hadley Wickham [aut], Jim Hester [aut, cre], Romain Francois [aut], R Core Team [ctb] (Date time code adapted from R), RStudio [cph, fnd], Jukka Jylänki [ctb, cph] (grisu3 implementation), Mikkel Jørgensen [ctb, cph] (grisu3 implementation)
+
+**Salmon** https://combine-lab.github.io/salmon/ Patro, R., Duggal, G., Love, M. I., Irizarry, R. A., & Kingsford, C. (2017). Salmon provides fast and bias-aware quantification of transcript expression. Nature Methods.
+
+**tidyr** https://cran.r-project.org/web/packages/tidyr/index.html Author: Hadley Wickham [aut, cre], Lionel Henry [aut], RStudio [cph]
+
+**tximport** https://bioconductor.org/packages/release/bioc/html/tximport.html Soneson C, Love MI, Robinson MD (2015). “Differential analyses for RNA-seq: transcript-level estimates improve gene-level inferences.” F1000Research, 4. doi: 10.12688/f1000research.7563.1.
+
+**visreg** https://cran.r-project.org/web/packages/visreg/visreg.pdf Author: Patrick Breheny, Woodrow Burchett
