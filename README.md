@@ -1,4 +1,6 @@
-# FastQC
+#Table of Contents
+#Dependencies
+## FastQC
 /home/sxxxxx/scripts/fastqc_report.sh
 ```
 #!/bin/bash 
@@ -23,7 +25,7 @@ for fastq_file in $RAW_PATH; do \
  mkdir fastqc_reports
  mv *.html fastqc_reports/`
  ```
- # get transcripts and ncRNA
+ ## get transcripts and ncRNA
   ```
 # get the files
 wget ftp://ftp.ensembl.org/pub/release-96/fasta/felis_catus/cds/Felis_catus.Felis_catus_9.0.cds.all.fa.gz
@@ -33,12 +35,12 @@ zcat Felis_catus.Felis_catus_9.0.cds.all.fa.gz Felis_catus.Felis_catus_9.0.ncrna
 # make a file to associate transcripts to genes
 grep "^>" tx.fa | cut -f1,4 -d" " | sed -e 's/>//g' -e 's/ /,/g' -e 's/gene://g' >> tx2gene.csv
  ```
-# index transcripts
+## index transcripts
 ```
  salmon index --transcripts tx.fa \
              --index tx_idx
 ```
-# quantify samples
+## quantify samples
 ```
 $ cat samples.txt
 Sample_1_S1
@@ -78,28 +80,23 @@ done < "samples.txt"
 # Install R
 sudo apt update
 sudo apt install gdebi libxml2-dev libssl-dev libcurl4-openssl-dev libopenblas-dev r-base r-base-dev
-
 # Install RStudio
 cd ~/Downloads
 wget https://download1.rstudio.org/rstudio-xenial-1.1.447-amd64.deb
 sudo gdebi rstudio-xenial-1.1.447-amd64.deb
 printf '\nexport QT_STYLE_OVERRIDE=gtk\n' | sudo tee -a ~/.profile
-
 # Install common packages
 R --vanilla << EOF
 install.packages(c("tidyverse","data.table","dtplyr","devtools","roxygen2","bit64","readr"), repos = "https://cran.rstudio.com/")
 q()
 EOF
-
 # Install TDD packages
 install.packages("testthis")
-
 # Export to HTML/Excel
 R --vanilla << EOF
 install.packages(c("htmlTable","openxlsx"), repos = "https://cran.rstudio.com/")
 q()
 EOF
-
 # Blog tools
 R --vanilla << EOF
 install.packages(c("knitr","rmarkdown"), repos='http://cran.us.r-project.org')
@@ -109,7 +106,6 @@ sudo apt install python-pip
 sudo apt install python3-pip
 sudo -H pip install markdown rpy2==2.7.1 pelican==3.7.1
 sudo -H pip3 install markdown rpy2==2.9.3 pelican==3.7.1 
-
 # PDF extraction tools
 sudo apt install libpoppler-cpp-dev default-jre default-jdk r-cran-rjava
 sudo R CMD javareconf
@@ -119,14 +115,12 @@ install.packages("pdftools", repos = "https://cran.rstudio.com/")
 install_github("ropensci/tabulizer")
 q()
 EOF
-
 # TTF/OTF fonts usage
 sudo apt install libfreetype6-dev
 R --vanilla << EOF
 install.packages("showtext", repos = "https://cran.rstudio.com/")
 q()
 EOF
-
 # Cairo for graphic devices
 sudo apt install libgtk2.0-dev libxt-dev libcairo2-dev
 R --vanilla << EOF
@@ -134,7 +128,7 @@ install.packages("Cairo", repos = "https://cran.rstudio.com/")
 q()
 EOF
 ```
-# load and attach libraries
+## load and attach libraries
 ```
 library(readr)
 library(tximport)
@@ -145,7 +139,7 @@ library(dplyr)
 library(cowplot)
 library(json)
 ```
-# import transcript counts
+## import transcript counts
 ```
 cat sample_data.csv
 sample,type
@@ -206,7 +200,7 @@ tx2gene <- read_csv("tx2gene.csv")
 # import the salmon output files
 txi <- tximport(files, type = "salmon", tx2gene = tx2gene)
 ```
-# import and create sample info
+## import and create sample info
 ```
 # make a data frame containing a single column named "sample"
 sample_df <- data.frame(sample = colnames(txi$counts), stringsAsFactors = FALSE)
@@ -232,7 +226,7 @@ Column `sample` joining character vector and factor, coercing into character vec
 > all(rownames(sampleTable) == colnames(txi$counts))
 [1] TRUE
 ```
-# create DESeqDataSet
+## create DESeqDataSet
 ```
 dds <- DESeqDataSetFromTximport(txi, sampleTable, ~type)
 # run DESeq2 on both versions
@@ -271,7 +265,7 @@ fitting model and testing
 Sample_1_S1 Sample_2_S2 Sample_3_S3 Sample_4_S4 Sample_5_S5 Sample_6_S6 Sample_7_S7 Sample_8_S8 Sample_9_S9 
    21718486    29688127     1055911    49308877    27360455    32492627    34705628     7860648    13177842
 ```
-# contrasts
+## contrasts
 alpha 0.05 padj 0.05 absLFC >=1
 ```
 # this is all the results (significant and non-significant)
@@ -295,7 +289,7 @@ res_AB_dn <- subset(res_AB, padj < 0.05 & log2FoldChange <= -1)
 > (nrow(res_AB_up) + nrow(res_AB_dn)) == nrow(res_AB_sig)
 [1] TRUE
 ```
-# MA plots
+## MA plots
 ```
 # res_AB all (significant and non-significant) 
 png("ma_plot_ab.png")
@@ -305,7 +299,7 @@ dev.off()
 #res_AB_up up-regulated genes
 # res_AB_dn down-regulated genes
 ```
-# PCA
+## PCA
 ```
 rld <- rlog(dds)
 pca1 <- plotPCA(rld, intgroup = "type") + ggtitle("500 genes")
@@ -338,7 +332,7 @@ png("pca_plot2.png", width = 2*480)
 plot_grid(pca12, pca13)
 dev.off()
 ```
-# extracting transformed values
+## extracting transformed values
 ```
 vsd <- vst(dds, blind=FALSE)
 head(assay(vsd), 3)
@@ -361,7 +355,7 @@ meanSdPlot(assay(ntd))
 meanSdPlot(assay(vsd))
 meanSdPlot(assay(rld))
 ```
-# Heatmap
+## Heatmap
 ```
 sampleDists <- dist(t(assay(vsd)))
 > library("RColorBrewer")
@@ -374,14 +368,14 @@ sampleDists <- dist(t(assay(vsd)))
 +          clustering_distance_cols=sampleDists,
 +          col=colors)
 ```
-# Euclidian distances
+## Euclidian distances
 ```
 rld_dds <- rlog(dds, fitType = "local")
 sampleDists_salm <- dist(t(assay(rld_dds))) #apply the dist function to the transpose of the transformed count matrix to get sample-to-sample distances
 sampleDistMatrix_salm <- as.matrix(sampleDists_salm)
 pheatmap(sampleDistMatrix_salm, clustering_distance_rows = sampleDists_salm, clustering_distance_cols = sampleDists_salm, main = "Euclidian distances between the samples")
 ```
-# pheatmaps
+## pheatmaps
 ```
 library(DESeq2)
 select_salm <- order(rowMeans(counts(dds, normalized=T)),decreasing = T)[1:50]
@@ -393,10 +387,9 @@ Error in pheatmap(log2.norm.counts_salm, cluster_rows = F, show_rownames = T,  :
   could not find function "pheatmap"
 library(pheatmap)
 pheatmap(log2.norm.counts_salm, cluster_rows = F, show_rownames = T, cluster_cols = T, legend = T, main = "Pheatmap 50 most highly expressed genes")
-
 (log2.norm.counts_salm)
 ```
-# adding gene names
+## adding gene names
 ```
 res_AC_up$ensembl <- sapply(strsplit(rownames(res_AC_up), split="\\+"), "[", 1)
 library("biomaRt")
@@ -407,7 +400,7 @@ genemap_res_AC_up <- getBM(attributes = c("ensembl_gene_id", "ensembl_gene_id_ve
                   mart = ensembl)
 idx_res_AC_up <- match(res_AC_up$ensembl, genemap_res_AC_up$ensembl_gene_id_version)
 ```
-# plotting genes
+## plotting genes
 ```
 library(DESeq2)
 library(dplyr)
@@ -466,7 +459,7 @@ bmp15_fd %>% dplyr::select(-se) %>% mutate_at(c("coef", "lower", "upper"), funct
 # From basic glm:
 bmp15_fit
 ```
-# sessionInfo()
+## sessionInfo()
 ```
 > sessionInfo()
 R version 3.4.4 (2018-03-15)
@@ -516,5 +509,3 @@ loaded via a namespace (and not attached):
 [96] digest_0.6.23          xtable_1.8-4           munsell_0.5.0         
 >
 ```
-
-
