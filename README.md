@@ -466,6 +466,55 @@ bmp15_fd %>% dplyr::select(-se) %>% mutate_at(c("coef", "lower", "upper"), funct
 # From basic glm:
 bmp15_fit
 ```
+# sessionInfo()
+```
+> sessionInfo()
+R version 3.4.4 (2018-03-15)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 18.04.3 LTS
 
-	
+Matrix products: default
+BLAS: /usr/lib/x86_64-linux-gnu/openblas/libblas.so.3
+LAPACK: /usr/lib/x86_64-linux-gnu/libopenblasp-r0.2.20.so
+
+locale:
+ [1] LC_CTYPE=en_GB.UTF-8       LC_NUMERIC=C               LC_TIME=en_GB.UTF-8        LC_COLLATE=en_GB.UTF-8    
+ [5] LC_MONETARY=en_GB.UTF-8    LC_MESSAGES=en_GB.UTF-8    LC_PAPER=en_GB.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C             LC_MEASUREMENT=en_GB.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] parallel  stats4    stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] data.table_1.12.6          formattable_0.2.0.1        org.Hs.eg.db_3.5.0         AnnotationDbi_1.40.0      
+ [5] gplots_3.0.1.1             cowplot_0.9.4              ggplot2_3.2.1              dplyr_0.8.3               
+ [9] tidyr_1.0.0                IHW_1.6.0                  DESeq2_1.18.1              SummarizedExperiment_1.8.1
+[13] DelayedArray_0.4.1         matrixStats_0.55.0         Biobase_2.38.0             GenomicRanges_1.30.3      
+[17] GenomeInfoDb_1.14.0        IRanges_2.12.0             S4Vectors_0.16.0           BiocGenerics_0.24.0       
+[21] tximport_1.6.0             readr_1.3.1                pheatmap_1.0.12            biomaRt_2.34.2            
+
+loaded via a namespace (and not attached):
+ [1] fgsea_1.4.1            colorspace_1.4-1       qvalue_2.10.0          htmlTable_1.13.3       XVector_0.18.0        
+ [6] base64enc_0.1-3        rstudioapi_0.10        farver_2.0.1           bit64_0.9-7            splines_3.4.4         
+[11] GOSemSim_2.4.1         geneplotter_1.56.0     knitr_1.26             zeallot_0.1.0          jsonlite_1.6          
+[16] Formula_1.2-3          annotate_1.56.2        cluster_2.1.0          GO.db_3.5.0            BiocManager_1.30.10   
+[21] compiler_3.4.4         httr_1.4.1             rvcheck_0.1.7          backports_1.1.5        assertthat_0.2.1      
+[26] Matrix_1.2-18          lazyeval_0.2.2         acepack_1.4.1          htmltools_0.4.0        prettyunits_1.0.2     
+[31] tools_3.4.4            igraph_1.2.4.2         gtable_0.3.0           glue_1.3.1             GenomeInfoDbData_1.0.0
+[36] reshape2_1.4.3         DO.db_2.9              fastmatch_1.1-0        Rcpp_1.0.3             slam_0.1-46           
+[41] vctrs_0.2.0            gdata_2.18.0           xfun_0.11              stringr_1.4.0          lifecycle_0.1.0       
+[46] gtools_3.8.1           XML_3.98-1.20          DOSE_3.4.0             zlibbioc_1.24.0        scales_1.1.0          
+[51] hms_0.5.2              RColorBrewer_1.1-2     yaml_2.2.0             memoise_1.1.0          gridExtra_2.3         
+[56] rpart_4.1-15           latticeExtra_0.6-28    stringi_1.4.3          RSQLite_2.1.4          highr_0.8             
+[61] genefilter_1.60.0      checkmate_1.9.4        caTools_1.17.1.3       BiocParallel_1.12.0    rlang_0.4.2           
+[66] pkgconfig_2.0.3        bitops_1.0-6           evaluate_0.14          lattice_0.20-38        lpsymphony_1.7.1      
+[71] purrr_0.3.3            htmlwidgets_1.5.1      labeling_0.3           bit_1.1-14             tidyselect_0.2.5      
+[76] plyr_1.8.4             magrittr_1.5           R6_2.4.1               Hmisc_4.3-0            DBI_1.0.0             
+[81] pillar_1.4.2           foreign_0.8-72         withr_2.1.2            survival_3.1-8         RCurl_1.95-4.12       
+[86] nnet_7.3-12            tibble_2.1.3           crayon_1.3.4           fdrtool_1.2.15         KernSmooth_2.23-15    
+[91] rmarkdown_1.18         progress_1.2.2         locfit_1.5-9.1         grid_3.4.4             blob_1.2.0            
+[96] digest_0.6.23          xtable_1.8-4           munsell_0.5.0         
+>
+```
+
 
