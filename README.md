@@ -24,7 +24,10 @@ for fastq_file in $RAW_PATH; do \
  mkdir fastqc_reports
  mv *.html fastqc_reports/`
  ```
- ## get transcripts and ncRNA
+## FastQC results
+E:\IZW\Chapter 1\Review\Attachments\Attachment 1 FastQC\Sample_1_S1_R1_001_fastqc.html 
+
+## get transcripts and ncRNA
   ```
 # get the files
 wget ftp://ftp.ensembl.org/pub/release-96/fasta/felis_catus/cds/Felis_catus.Felis_catus_9.0.cds.all.fa.gz
