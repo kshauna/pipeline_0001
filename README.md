@@ -1,4 +1,17 @@
-# Analysis workflow
+#  Early preantral follicles of the domestic cat express a gonadotropic and steroidogenic signalling potential
+#### Kehoe, S.<sup>1</sup>, Jewgenow, K.<sup>1</sup>, Johnston, P.R.<sup>2</sup>, Braun, B.C.<sup>1</sup> 
+#### <sup>1</sup> Department of Reproduction Biology, Leibniz-Institute for Zoo and Wildlife Research, Alfred-Kowalke-Straße 17, 10315 Berlin, Germany, kehoe@izw-berlin.de 
+
+#### Previously see https://github.com/kshauna/OvarianFollicleTranscriptomics-DomesticCat
+ 
+| Author of repository: | Author of script: | Date:   |
+| --------------- | --------------- | --------------- |
+| Shauna Kehoe<sup>1</sup> | Paul R. Johnston<sup>2</sup> |  May 03, 2021  |
+
+<sup>1</sup> Department of Reproduction Biology, Leibniz-Institute for Zoo and Wildlife Research (IZW), Alfred-Kowalke-Straße 17, 10315 Berlin, Germany, corresponding author: kehoe@izw-berlin.de 
+
+<sup>2</sup> Berlin Center for Genomics in Biodiversity Research BeGenDiv, Königin-Luise-Straße 6-8, D-14195, Berlin, Germany; Leibniz-Institute of Freshwater Ecology and Inland Fisheries, Müggelseedamm 310, 12587, Berlin, Germany; Freie Universität Berlin, Institut für Biologie, Königin-Luise-Straße 1-3, 14195, Berlin, Germany
+
 ## FastQC
 /home/sxxxxx/scripts/fastqc_report.sh
 ```
